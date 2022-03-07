@@ -8,7 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C29E39F1-81C3-4EC0-AC61-6722DE9A593F}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
-		docker-kong\compose\config\kong.yaml = docker-kong\compose\config\kong.yaml
+		config\kong\kong.yaml = config\kong\kong.yaml
 	EndProjectSection
 EndProject
 Global
