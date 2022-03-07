@@ -1,0 +1,21 @@
+﻿namespace ProductService.Model
+{
+    public class Product
+    {
+        public Product(int id, string name, string description, int price, int quantiy, string category) { 
+            Id = id;
+            Name = name; 
+            Description = description;
+            Price = price;
+            Quantity = quantiy;
+            Category = category;
+        }
+
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public string Description { get; set; } = string.Empty;
+        public int Price { get; set; } 
+        public int Quantity { get; set; }
+        public string Category { get; set; }
+    }
+}
