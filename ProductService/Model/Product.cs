@@ -2,12 +2,12 @@
 {
     public class Product
     {
-        public Product(int id, string name, string description, int price, int quantiy, string category) { 
+        public Product(int id, string name, string description, int price, int quantity, string category) { 
             Id = id;
             Name = name; 
             Description = description;
             Price = price;
-            Quantity = quantiy;
+            Quantity = quantity;
             Category = category;
         }
 

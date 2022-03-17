@@ -3,16 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 using ProductService.Controllers.DTO;
 using ProductService.DAL;
 using ProductService.Model;
+using ProductService.Services;
 
 namespace ProductService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Products")]
     [ApiController]
     public class ProductsController : ControllerBase
     {
         private readonly IProductsRepository repository;
-        public ProductsController(IProductsRepository respository) {
+        private readonly IRabbitMQService rabbitMQ;
+        public ProductsController(IProductsRepository respository, IRabbitMQService rabbitMQ) {
             this.repository = respository;
+            this.rabbitMQ = rabbitMQ;
         }
 
         [HttpGet]
@@ -24,6 +27,7 @@ namespace ProductService.Controllers
         [HttpGet("hello")]
         public ActionResult<String> hello()
         {
+            this.rabbitMQ.Send();
             return Ok("hello");
         }
 
@@ -64,6 +68,26 @@ namespace ProductService.Controllers
             if (result == null)
                 return NotFound();
             return NoContent();
+        }
+
+        [HttpPost("{productID}/tobasket")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult AddProductToBasket([FromQuery] string userID, [FromQuery] int? amount, int productID) {
+            if (userID == null)
+                return BadRequest("User not specified");
+            if (amount == null)
+                return BadRequest("Amount not specified");
+
+            var product = this.repository.FindById(productID);
+            if (product == null)
+                return BadRequest("Invalid productID");
+            if (product.Quantity < amount)
+                return BadRequest("Not enough products");
+            product.Quantity = amount.Value;
+            this.rabbitMQ.AddProductToBasket(product);
+            return Accepted();
+
         }
     }
 }

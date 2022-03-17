@@ -26,6 +26,10 @@ networks:
     external: false
   kong-net:
     external: false
+  rabbitMQnet:
+    external: false
+  basket-net:
+    external: false
 
 
 services:
@@ -55,7 +59,31 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     networks:
       - products-net
+      - rabbitMQnet
 
+  basket-service:
+    build:
+      context: .
+      dockerfile: BasketService/Dockerfile
+    depends_on: 
+      - mongoDB
+    restart: always
+    ports:
+      - "7300:80"
+    networks:
+      - basket-net
+      - rabbitMQnet
+
+  mongoDB:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: basketDB
+    networks:
+      - basket-net
 
   kong-migrations:
     image: "${KONG_DOCKER_TAG:-kong:latest}"
@@ -145,6 +173,19 @@ services:
       - no-new-privileges
     depends_on:
       - postgres-2-db
+
+  RabbitMQ:
+    image: rabbitmq:3.9-management
+    hostname: rabbitmq
+    ports:
+    - "4369:4369"
+    - "5671:5671"
+    - "5672:5672"
+    - "25672:25672"
+    - "15671:15671"
+    - "15672:15672"
+    networks:
+      - rabbitMQnet
 
 secrets:
   kong_postgres_password:

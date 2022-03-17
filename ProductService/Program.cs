@@ -8,11 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-var connectionString = builder.Configuration.GetSection("ConnectionStrings")["DatabaseConnection"];
+var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
 
 builder.Services.AddDbContext<ProductService.DAL.EfDbContext.ProductDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddScoped<ProductService.DAL.IProductsRepository, ProductService.DAL.ProductsRepository>();
 builder.Services.AddScoped<ProductService.DAL.EfDbContext.ProductDbContext>();
+
+//initiate RabbitMQ for DI
+var rabbitMQConntectionString = builder.Configuration.GetConnectionString("RabbitMQConnection");
+var rabbitMQ = new ProductService.Services.RabbitMQService(rabbitMQConntectionString);
+builder.Services.AddSingleton<ProductService.Services.IRabbitMQService>(rabbitMQ);
 
 var options = new DbContextOptionsBuilder<ProductService.DAL.EfDbContext.ProductDbContext>().UseSqlServer(connectionString).Options;
 using (var db = new ProductService.DAL.EfDbContext.ProductDbContext(options)) {
