@@ -18,8 +18,7 @@ volumes:
     driver_opts:
      type: tmpfs
      device: tmpfs
-  postgres-2:
-    driver: local
+  mongoDB:
 
 networks:
   products-net:
@@ -84,13 +83,13 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: basketDB
     networks:
       - basket-net
+    volumes:
+      - mongoDB
 
   kong-migrations:
     image: "${KONG_DOCKER_TAG:-kong:latest}"
     command: kong migrations bootstrap
     profiles: ["database"]
-    depends_on:
-      - postgres-2-db
     environment:
       <<: *kong-env
     secrets:
@@ -103,8 +102,6 @@ services:
     image: "${KONG_DOCKER_TAG:-kong:latest}"
     command: kong migrations bootstrap && kong migrations finish
     profiles: ["database"]
-    depends_on:
-      - postgres-2-db
     environment:
       <<: *kong-env
     secrets:
@@ -112,20 +109,6 @@ services:
     networks:
       - kong-net
     restart: on-failure
-
-  postgres-2-db:
-    image: postgres:13.6-alpine
-    restart: always
-    environment:
-      POSTGRES_DB: ${KONG_PG_DATABASE:-kong}
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-2:/var/lib/postgresql/data
-    networks:
-      - kong-net
 
 
   kong:
@@ -171,8 +154,6 @@ services:
       - ./config/kong:/opt/kong
     security_opt:
       - no-new-privileges
-    depends_on:
-      - postgres-2-db
 
   RabbitMQ:
     image: rabbitmq:3.9-management

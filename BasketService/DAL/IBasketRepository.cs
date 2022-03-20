@@ -7,6 +7,6 @@ namespace BasketService.DAL
         List<UserBasket> getAllBaskets();
         UserBasket FindBasketById(string id);
         UserBasket FindBasketByUserId(int id);
-        void AddProductToBasket(Product product);
+        void AddProductToBasket(Product product, int userId);
     }
 }

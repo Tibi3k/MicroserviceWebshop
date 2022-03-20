@@ -1,3 +1,4 @@
+using BasketService.DAL;
 using BasketService.Services;
 using MongoDB.Driver;
 
@@ -10,23 +11,25 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//initiate RabbitMQ for DI
-var rabbitMQConntectionString = builder.Configuration.GetConnectionString("RabbitMQConnection");
-var rabbitMQ = new BasketService.Services.RabbitMQService(rabbitMQConntectionString);
-builder.Services.AddSingleton<BasketService.Services.IRabbitMQService>(rabbitMQ);
+
 
 //initiate MongoDB connection
 var mongoDBConnectionString = builder.Configuration.GetConnectionString("MongoDBConnection");
-builder.Services.AddSingleton<IMongoClient>(new MongoClient(mongoDBConnectionString));
+var mongo = new MongoClient(mongoDBConnectionString);
+builder.Services.AddSingleton<IMongoClient>(mongo);
+var db = mongo.GetDatabase("basket");
+builder.Services.AddSingleton(db);
+var repo = new BasketRepository(db);
+var service = builder.Services.AddSingleton<IBasketRepository>(repo);
 
-builder.Services.AddSingleton(sp =>
-{
-    var client = sp.GetRequiredService<IMongoClient>();
-    return client.GetDatabase("basket");
-});
+//initiate RabbitMQ for DI
+var rabbitMQConntectionString = builder.Configuration.GetConnectionString("RabbitMQConnection");
+var rabbitMQ = new BasketService.Services.RabbitMQService(rabbitMQConntectionString, repo);
+builder.Services.AddSingleton<BasketService.Services.IRabbitMQService>(rabbitMQ);
+
+
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

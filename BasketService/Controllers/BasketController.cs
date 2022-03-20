@@ -1,5 +1,7 @@
 using BasketService.Services;
 using Microsoft.AspNetCore.Mvc;
+using BasketService.DAL;
+using BasketService.Model;
 
 namespace BasketService.Controllers
 {
@@ -8,10 +10,17 @@ namespace BasketService.Controllers
     [Route("/api/basket")]
     public class BasketController : ControllerBase
     {
-        public readonly IRabbitMQService rabbitMQService;
+        private readonly IRabbitMQService rabbitMQService;
+        private readonly IBasketRepository repository;
 
-        public BasketController(IRabbitMQService rabbitMQ) { 
+        public BasketController(IRabbitMQService rabbitMQ, IBasketRepository repository) { 
             this.rabbitMQService = rabbitMQ;
+            this.repository = repository;
         }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<List<UserBasket>> listAll()  => repository.getAllBaskets();
+
     }
 }

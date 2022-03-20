@@ -13,8 +13,9 @@ namespace BasketService.Services
         private readonly EventingBasicConsumer consumer;
         private readonly IBasketRepository repository;
 
-        public RabbitMQService(string connectionString)
+        public RabbitMQService(string connectionString, IBasketRepository repository)
         {
+            this.repository = repository;
             var connectionFactory = new ConnectionFactory();
             connectionFactory.Uri = new Uri(connectionString);
             //connectionFactory.ClientProvidedName = "app:ProductService component:event-consumer";
@@ -35,13 +36,20 @@ namespace BasketService.Services
         private void ActivateEventConsumer() {
             consumer.Received +=  (sender, ea) =>
             {
+                Console.WriteLine("got message");
                 var body = ea.Body.ToArray();
                 var serializedObject = System.Text.Encoding.Default.GetString(body);
+                var indexOfUserId = serializedObject.IndexOf("userId");
+                var serializedProduct = serializedObject.Substring(0, indexOfUserId);
+                var userId = Int32.Parse(serializedObject.Substring(indexOfUserId + "userId:".Length));
+                Console.WriteLine("Product:" + serializedProduct);
+                Console.WriteLine("UserId:" + userId);
                 try
                 {
-                    Product product = JsonSerializer.Deserialize<Product>(serializedObject, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    Product product = JsonSerializer.Deserialize<Product>(serializedProduct, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     if (product == null)
                         Console.WriteLine("null");
+                    repository.AddProductToBasket(product, userId);
                     channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                 }
                 catch (Exception ex)

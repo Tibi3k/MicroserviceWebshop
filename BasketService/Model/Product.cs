@@ -2,6 +2,7 @@
 {
     public class Product
     {
+        public Product() { }
         public Product(int Id, string Name, string Description, int Price, int Quantity, string Category)
         {
             this.Id = Id;

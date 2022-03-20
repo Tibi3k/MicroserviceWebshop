@@ -28,8 +28,9 @@ namespace ProductService.Services
             channel.BasicPublish("", "ProductToBasketQueue", null, messageBodyBytes);
         }
 
-        public void AddProductToBasket(Product product) {
+        public void AddProductToBasket(Product product, int userId) {
             string jsonObject = JsonSerializer.Serialize(product);
+            jsonObject += "userId:" + userId;
             byte[] messageBodyBytes = System.Text.Encoding.UTF8.GetBytes(jsonObject);
             channel.BasicPublish("", "ProductToBasketQueue", null, messageBodyBytes);
         }

@@ -73,7 +73,7 @@ namespace ProductService.Controllers
         [HttpPost("{productID}/tobasket")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult AddProductToBasket([FromQuery] string userID, [FromQuery] int? amount, int productID) {
+        public ActionResult AddProductToBasket([FromQuery] int? userID, [FromQuery] int? amount, int productID) {
             if (userID == null)
                 return BadRequest("User not specified");
             if (amount == null)
@@ -85,7 +85,7 @@ namespace ProductService.Controllers
             if (product.Quantity < amount)
                 return BadRequest("Not enough products");
             product.Quantity = amount.Value;
-            this.rabbitMQ.AddProductToBasket(product);
+            this.rabbitMQ.AddProductToBasket(product, userID.Value);
             return Accepted();
 
         }

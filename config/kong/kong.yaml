@@ -26,3 +26,27 @@ services:
     - http
     - https
     regex_priority: 0
+
+- connect_timeout: 60000
+  host: host.docker.internal
+  name: BasketService
+  path: /api/Basket
+  port: 7300
+  protocol: http
+  read_timeout: 60000
+  retries: 5
+  write_timeout: 60000
+  routes:
+  - name: BasketService
+    methods:
+      - GET
+      - POST
+      - DELETE
+      - PUT
+    paths:
+     - /basket
+    preserve_host: false
+    protocols:
+    - http
+    - https
+    regex_priority: 0
