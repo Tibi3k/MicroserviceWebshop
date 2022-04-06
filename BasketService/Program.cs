@@ -1,6 +1,8 @@
 using BasketService.DAL;
 using BasketService.Services;
+using MassTransit;
 using MongoDB.Driver;
+using static BasketService.Services.RabbitMQService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,22 +13,37 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IRabbitMQService, RabbitMQService>();
 
 
-//initiate MongoDB connection
 var mongoDBConnectionString = builder.Configuration.GetConnectionString("MongoDBConnection");
-var mongo = new MongoClient(mongoDBConnectionString);
-builder.Services.AddSingleton<IMongoClient>(mongo);
-var db = mongo.GetDatabase("basket");
-builder.Services.AddSingleton(db);
-var repo = new BasketRepository(db);
-var service = builder.Services.AddSingleton<IBasketRepository>(repo);
+builder.Services.AddSingleton<IMongoClient>(new MongoClient(mongoDBConnectionString));
 
-//initiate RabbitMQ for DI
-var rabbitMQConntectionString = builder.Configuration.GetConnectionString("RabbitMQConnection");
-var rabbitMQ = new BasketService.Services.RabbitMQService(rabbitMQConntectionString, repo);
-builder.Services.AddSingleton<BasketService.Services.IRabbitMQService>(rabbitMQ);
+builder.Services.AddSingleton(sp =>
+{
+    var client = sp.GetRequiredService<IMongoClient>();
+    return client.GetDatabase("basket");
+});
+var service = builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
+//initiate Mass Transit RabbitMQ for DI
+builder.Services.AddMassTransit(options => {
+    options.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("RabbitMQ", "/", h =>
+        {
+            h.Password("guest");
+            h.Username("guest");
+        });
+
+        cfg.ReceiveEndpoint("ProductToBasketQueue3", e =>
+        {
+            var service = context.GetRequiredService(typeof(IBasketRepository)) as IBasketRepository;
+            e.Consumer(() => new OrderSubmittedEventConsumer(service));
+            e.RethrowFaultedMessages();
+        });
+    });
+});
 
 
 var app = builder.Build();

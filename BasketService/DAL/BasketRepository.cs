@@ -63,5 +63,9 @@ namespace BasketService.DAL
                 .Select(b => DbBasket.ToModel(b))
                 .ToList();
         }
+
+        public void Test() {
+            Console.WriteLine("BasketRepostiroy test called!");
+        }
     }
 }

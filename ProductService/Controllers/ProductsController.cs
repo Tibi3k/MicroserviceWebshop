@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MassTransit;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProductService.Controllers.DTO;
 using ProductService.DAL;
 using ProductService.Model;
 using ProductService.Services;
+using static ProductService.Services.RabbitMQService;
 
 namespace ProductService.Controllers
 {
@@ -12,10 +14,10 @@ namespace ProductService.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductsRepository repository;
-        private readonly IRabbitMQService rabbitMQ;
-        public ProductsController(IProductsRepository respository, IRabbitMQService rabbitMQ) {
+        private readonly IRabbitMQService rabbitmq;
+        public ProductsController(IProductsRepository respository, IRabbitMQService rabbitmq) {
             this.repository = respository;
-            this.rabbitMQ = rabbitMQ;
+            this.rabbitmq = rabbitmq;
         }
 
         [HttpGet]
@@ -27,7 +29,6 @@ namespace ProductService.Controllers
         [HttpGet("hello")]
         public ActionResult<String> hello()
         {
-            this.rabbitMQ.Send();
             return Ok("hello");
         }
 
@@ -73,7 +74,7 @@ namespace ProductService.Controllers
         [HttpPost("{productID}/tobasket")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult AddProductToBasket([FromQuery] int? userID, [FromQuery] int? amount, int productID) {
+        public async Task<ActionResult> AddProductToBasket([FromQuery] int? userID, [FromQuery] int? amount, int productID) {
             if (userID == null)
                 return BadRequest("User not specified");
             if (amount == null)
@@ -85,7 +86,7 @@ namespace ProductService.Controllers
             if (product.Quantity < amount)
                 return BadRequest("Not enough products");
             product.Quantity = amount.Value;
-            this.rabbitMQ.AddProductToBasket(product, userID.Value);
+            await this.rabbitmq.AddProductToBasket(product, userID.Value);
             return Accepted();
 
         }

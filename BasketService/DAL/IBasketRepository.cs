@@ -8,5 +8,7 @@ namespace BasketService.DAL
         UserBasket FindBasketById(string id);
         UserBasket FindBasketByUserId(int id);
         void AddProductToBasket(Product product, int userId);
+
+        void Test();
     }
 }

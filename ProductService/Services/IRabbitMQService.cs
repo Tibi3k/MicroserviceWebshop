@@ -5,6 +5,6 @@ namespace ProductService.Services
     public interface IRabbitMQService
     {
         public void Send();
-        public void AddProductToBasket(Product product, int userId);
+        public Task AddProductToBasket(Product product, int userId);
     }
 }
