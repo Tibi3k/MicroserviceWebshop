@@ -15,7 +15,7 @@ namespace ProductService.DAL {
 
         public IReadOnlyCollection<Product> List()
         {
-            return db.Products.Include(p => p.Category).Select(ToModel).ToList();   
+            return db.Products.Include(p => p.Category).Select(ToModel).ToList();
         }
 
         public Product? FindById(int id) { 

@@ -13,19 +13,18 @@ builder.Services.AddEndpointsApiExplorer();
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
 
 builder.Services.AddDbContext<ProductService.DAL.EfDbContext.ProductDbContext>(options => {
-    options.UseSqlServer(connectionString
-    //,
-    //sqlServerOptionsAction: sqlOptions =>
-    //{
-    //    sqlOptions.EnableRetryOnFailure(
-    //    maxRetryCount: 10000,
-    //    maxRetryDelay: TimeSpan.FromSeconds(1),
-    //    errorNumbersToAdd: null);
-    //}
+    options.UseSqlServer(connectionString,
+    sqlServerOptionsAction: sqlOptions =>
+    {
+       sqlOptions.EnableRetryOnFailure(
+       maxRetryCount: 255,
+       maxRetryDelay: TimeSpan.FromSeconds(1),
+       errorNumbersToAdd: null);
+    }
     );
 });
 builder.Services.AddScoped<ProductService.DAL.IProductsRepository, ProductService.DAL.ProductsRepository>();
-builder.Services.AddScoped<ProductService.DAL.EfDbContext.ProductDbContext>();
+//builder.Services.AddScoped<ProductService.DAL.EfDbContext.ProductDbContext>();
 
 //initiate RabbitMQ for DI
 builder.Services.AddMassTransit(options => {
@@ -50,11 +49,11 @@ builder.Services.AddScoped<IRabbitMQService, RabbitMQService>();
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
-//using (var serviceScope = app.Services.CreateScope())
-//{
-//    var context = serviceScope.ServiceProvider.GetRequiredService<ProductService.DAL.EfDbContext.ProductDbContext>();
-//    context.Database.EnsureCreated();
-//}
+using (var serviceScope = app.Services.CreateScope())
+{
+    var context = serviceScope.ServiceProvider.GetRequiredService<ProductService.DAL.EfDbContext.ProductDbContext>();
+    context.Database.EnsureCreated();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

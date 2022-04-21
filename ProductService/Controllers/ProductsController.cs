@@ -22,7 +22,7 @@ namespace ProductService.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<String> feckOff() {
+        public ActionResult<IEnumerable<Product>> feckOff() {
             return Ok(this.repository.List());
         }
 
