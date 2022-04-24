@@ -22,14 +22,8 @@ namespace ProductService.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<Product>> feckOff() {
+        public ActionResult<IEnumerable<Product>> GetAllProducts() {
             return Ok(this.repository.List());
-        }
-
-        [HttpGet("hello")]
-        public ActionResult<String> hello()
-        {
-            return Ok("hello");
         }
 
         [HttpGet("{id}")]
@@ -79,7 +73,7 @@ namespace ProductService.Controllers
                 return BadRequest("User not specified");
             if (amount == null)
                 return BadRequest("Amount not specified");
-
+            Console.WriteLine("Product id:" + productID);
             var product = this.repository.FindById(productID);
             if (product == null)
                 return BadRequest("Invalid productID");

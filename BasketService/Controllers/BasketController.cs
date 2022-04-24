@@ -53,6 +53,7 @@ namespace BasketService.Controllers
             if (basket == null)
                 return NotFound("No user or basket");
             await this.rabbitMQ.ConvertBasketToOrderAsync(basket);
+            await this.rabbitMQ.SendOrderConfirmationEmailAsync(basket);
             return Ok();
         }
     }

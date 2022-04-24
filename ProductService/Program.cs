@@ -13,14 +13,15 @@ builder.Services.AddEndpointsApiExplorer();
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
 
 builder.Services.AddDbContext<ProductService.DAL.EfDbContext.ProductDbContext>(options => {
-    options.UseSqlServer(connectionString,
-    sqlServerOptionsAction: sqlOptions =>
-    {
-       sqlOptions.EnableRetryOnFailure(
-       maxRetryCount: 255,
-       maxRetryDelay: TimeSpan.FromSeconds(1),
-       errorNumbersToAdd: null);
-    }
+    options.UseSqlServer(connectionString
+    //,
+    //sqlServerOptionsAction: sqlOptions =>
+    //{
+    //   sqlOptions.EnableRetryOnFailure(
+    //   maxRetryCount: 255,
+    //   maxRetryDelay: TimeSpan.FromSeconds(1),
+    //   errorNumbersToAdd: null);
+    //}
     );
 });
 builder.Services.AddScoped<ProductService.DAL.IProductsRepository, ProductService.DAL.ProductsRepository>();

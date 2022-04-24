@@ -16,7 +16,6 @@ namespace BasketService.Services
         {
             this.repository = repository;
             this._sendEndpointProvider = sendEndpointProvider;
-
         }
 
         public class OrderSubmittedEventConsumer : IConsumer<IProductWithUserId>
@@ -29,7 +28,7 @@ namespace BasketService.Services
             public async Task Consume(ConsumeContext<IProductWithUserId> context)
             {
                 Console.WriteLine("Product recieved" + context.Message.Product);
-                repository.AddProductToBasket(context.Message.Product, context.Message.UserId);
+                await repository.AddProductToBasketAsync(context.Message.Product, context.Message.UserId);
             }
 
         }
@@ -39,7 +38,22 @@ namespace BasketService.Services
             Console.WriteLine("sending basket:" + basket.ToString());
             await endpoint.Send<IBasketTransfer>(new
             {
-                UserBasket = basket
+                Email = "tiborsolyom91@gmail.com",
+                UserBasket = basket,
+                Name = "Tibor solyom"
+            });
+        }
+
+        public async Task SendOrderConfirmationEmailAsync(UserBasket basket)
+        {
+            var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:OrderConfirmationEmailQueue"));
+            Console.WriteLine("sending basket:" + basket.Products.ToList()[0].ToString() + ", " + basket.Id );
+            await endpoint.Send<IBasketTransfer>(new
+            {
+                Email = "tiborsolyom91@gmail.com",
+                OrderId = basket.Id,
+                Products = basket.Products,
+                Name = "Tibor solyom"
             });
         }
 
@@ -52,7 +66,10 @@ namespace BasketService.Services
     }
 
     public interface IBasketTransfer { 
-        UserBasket Basket { get; set; }
+        string Email { get; set; }
+        string OrderId { get; set; }
+        List<Product> Products { get; set; }
+        string Name { get; set; }
     }
 
 }
