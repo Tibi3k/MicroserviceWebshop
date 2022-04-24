@@ -37,6 +37,16 @@ public class DbProduct
         }
         return list;
     }
+    public static List<DbProduct> ToEntity(ICollection<Product> products)
+    {
+        var list = new List<DbProduct>();
+        foreach (var product in products)
+        {
+            list.Add(ToEntity(product));
+        }
+        return list;
+    }
+
 
     public static DbProduct ToEntity(Product product)
     {

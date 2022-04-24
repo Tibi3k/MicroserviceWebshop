@@ -7,16 +7,16 @@ using System.Text.Json;
 
 namespace BasketService.Services
 {
-
-
     public class RabbitMQService : IRabbitMQService
     {
         private readonly IBasketRepository repository;
+        private readonly ISendEndpointProvider _sendEndpointProvider;
 
-        public RabbitMQService(IBasketRepository repository)
+        public RabbitMQService(IBasketRepository repository, ISendEndpointProvider sendEndpointProvider)
         {
             this.repository = repository;
-            
+            this._sendEndpointProvider = sendEndpointProvider;
+
         }
 
         public class OrderSubmittedEventConsumer : IConsumer<IProductWithUserId>
@@ -34,6 +34,15 @@ namespace BasketService.Services
 
         }
 
+        public async Task ConvertBasketToOrderAsync(UserBasket basket) {
+            var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:BasketToOrderQueue"));
+            Console.WriteLine("sending basket:" + basket.ToString());
+            await endpoint.Send<IBasketTransfer>(new
+            {
+                UserBasket = basket
+            });
+        }
+
     }
 
     public interface IProductWithUserId
@@ -41,4 +50,9 @@ namespace BasketService.Services
         Product Product { get; set; }
         int UserId { get; set; }
     }
+
+    public interface IBasketTransfer { 
+        UserBasket Basket { get; set; }
+    }
+
 }

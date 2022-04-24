@@ -4,10 +4,12 @@ namespace BasketService.DAL
 {
     public interface IBasketRepository
     {
-        List<UserBasket> getAllBaskets();
+        Task<List<UserBasket>> getAllBasketsAsync();
         UserBasket FindBasketById(string id);
-        UserBasket FindBasketByUserId(int id);
-        void AddProductToBasket(Product product, int userId);
+        Task<UserBasket?> FindBasketByUserIdAsync(int id);
+        Task AddProductToBasketAsync(Product product, int userId);
+
+        Task<long> DeleteProductFromBasketAsync(int userId, int productId);
 
         void Test();
     }

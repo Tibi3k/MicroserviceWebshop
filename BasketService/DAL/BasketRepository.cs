@@ -10,14 +10,13 @@ namespace BasketService.DAL
         public BasketRepository(IMongoDatabase database) {
             this.basketsCollection = database.GetCollection<DbBasket>("baskets");
         }
-        public void AddProductToBasket(Product product, int userId)
+        public async Task AddProductToBasketAsync(Product product, int userId)
         {
 
-            var qBasket = basketsCollection
-                .Find(b => b.UserId == userId)
-                .FirstOrDefault();
+            var qBasket = await basketsCollection.FindAsync(b => b.UserId == userId);
+            var userBasket = await qBasket.FirstOrDefaultAsync();
 
-            if (qBasket == null) {
+            if (userBasket == null) {
                 var newBasket = new DbBasket()
                 {
                     UserId = userId,
@@ -25,17 +24,17 @@ namespace BasketService.DAL
                     Products = new List<DbProduct>(),
                     TotalCost = 0
                 };
-                basketsCollection.InsertOne(newBasket);
-                qBasket = newBasket;
+                await basketsCollection.InsertOneAsync(newBasket);
+                userBasket = newBasket;
                
             }
 
             var dbProduct = DbProduct.ToEntity(product);
 
-            var productsSubCollections = qBasket.Products;
+            var productsSubCollections = userBasket.Products;
             productsSubCollections.Add(dbProduct);
 
-            var result = basketsCollection.UpdateOne(
+            var result = await basketsCollection.UpdateOneAsync(
                 filter: b => b.UserId == userId,
                 update: Builders<DbBasket>.Update.Set(b => b.Products, productsSubCollections)
                 );
@@ -48,21 +47,43 @@ namespace BasketService.DAL
             throw new NotImplementedException();
         }
 
-        public UserBasket FindBasketByUserId(int id)
+        public async Task<UserBasket?> FindBasketByUserIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var qBasket = await basketsCollection.FindAsync(b => b.UserId == id);
+            var basket = await qBasket.SingleOrDefaultAsync();
+
+            return basket?.ToModel();
+            
         }
 
-        public List<UserBasket> getAllBaskets()
+        public async Task<List<UserBasket>> getAllBasketsAsync()
         {
-            var baskets = basketsCollection
-                .Find(_ => true)
-                .ToList();
+            var baskets = (await basketsCollection.FindAsync(_ => true)).ToList();
 
             return baskets
-                .Select(b => DbBasket.ToModel(b))
+                .Select(b => b.ToModel())
                 .ToList();
         }
+
+        //returns the number of edits in the database
+        public async Task<long> DeleteProductFromBasketAsync(int userId, int productId) {
+            var qBasket = await basketsCollection.FindAsync(b => b.UserId == userId);
+            var basket = await qBasket.SingleOrDefaultAsync();
+
+            if (basket == null)
+                return 0;
+
+            var updatedProductsSubcollection = basket.Products.ToList();
+            updatedProductsSubcollection.Where(product => product.Id != productId);
+
+            var result = await basketsCollection.UpdateOneAsync(
+                filter: b => b.UserId == userId,
+                update: Builders<DbBasket>.Update.Set(b => b.Products, updatedProductsSubcollection)
+                );
+
+            return result.ModifiedCount;
+        }
+
 
         public void Test() {
             Console.WriteLine("BasketRepostiroy test called!");

@@ -13,12 +13,14 @@ public class DbBasket
     public DateTime LastEdited { get; set; }
     public int TotalCost { get; set; }
 
-    public static UserBasket ToModel(DbBasket basket) {
+    public UserBasket ToModel() {
         return new UserBasket()
         {
-            Id = basket.Id.ToString(),
-            UserId = basket.UserId,
-            Products = DbProduct.ToModel(basket.Products)
+            Id = this.Id.ToString(),
+            UserId = this.UserId,
+            Products = DbProduct.ToModel(this.Products),
+            LastEdited = this.LastEdited,
+            TotalCost = this.TotalCost,
         };
     }
 }
