@@ -1,0 +1,20 @@
+api:
+  dashboard: true
+
+entryPoints:
+  web:
+    address: ":80"
+  https:
+    address: ":443"
+
+providers:
+  docker:
+    exposedByDefault: false
+
+certificatesResolvers:
+  http:
+    acme:
+      email: solyomtibi2000@gmail.com
+      storage: /acme/acme.json
+      httpChallenge:
+        entryPoint: web
