@@ -28,12 +28,28 @@ networks:
 
 
 services:
+  auth-service:
+    build:
+      context: .
+      dockerfile: AuthService/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "6200:80" 
+    networks:
+      - products-net
+      - rabbitMQnet
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth-service.rule=Host(`localhost`) && Path(`/auth{any:.*}`)"
+      - "traefik.http.routers.auth-service.entrypoints=web"
+      - "traefik.port=6200"
   nginx:
     container_name: AngularNginx
     build: 
       context: .
       dockerfile: MicroserviceFrontend/Dockerfile
-    restart: always
+    restart: unless-stopped
     networks: 
       - products-net
       - rabbitMQnet
@@ -51,7 +67,7 @@ services:
     build:
       context: .
       dockerfile: EmailService/Dockerfile
-    restart: always
+    restart: unless-stopped
     networks:
       - rabbitMQnet
   mssql:
@@ -72,15 +88,20 @@ services:
       dockerfile: ProductService/Dockerfile
     depends_on:
       - mssql
-    restart: always
+    restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.product-service.rule=Host(`localhost`) && Path(`/api/products{any:.*}`, `/api/categories{any2:.*}`)"
+      - "traefik.http.routers.product-service.rule=Host(`localhost`) && Path(`/api/products{any:.*}`, `/api/categories{any2:.*}`) && Method(`POST`, `DELETE`)"
       - "traefik.http.routers.product-service.entrypoints=web"
      # - "traefik.http.middlewares.product-service.replacepath.path=/api/Products"
+      - "traefik.http.routers.product-service-free.rule=Host(`localhost`) && Path(`/api/products`, `/api/{any3:[0-9]+}/`) && Method(`GET`)"
+      - "traefik.http.routers.product-service-free.entrypoints=web"
+      - "traefik.http.routers.product-service-free.middlewares= testheader@docker"
       - "traefik.port=80"
       - "traefik.http.middlewares.testheader.headers.accesscontrolalloworiginlist=http://localhost/"
-      - traefik.http.routers.product-service.middlewares=testheader@docker
+      - "traefik.http.middlewares.productsAuth.forwardauth.address=http://host.docker.internal:6200/auth"
+      - "traefik.http.middlewares.productsAuth.forwardauth.authResponseHeaders=Authorization"
+      - "traefik.http.routers.product-service.middlewares= testheader@docker, productsAuth@docker"
       #- traefik.http.routers.product-service.middlewares=product-service@docker
       #- "traefik.http.routers.product-service.service=product-service@docker"
       #- "traefik.http.services.product-service.loadbalancer.server.port=80"
@@ -100,7 +121,7 @@ services:
       dockerfile: BasketService/Dockerfile
     depends_on: 
       - mongoDB
-    restart: always
+    restart: unless-stopped
     networks:
       - basket-net
       - rabbitMQnet
@@ -115,7 +136,7 @@ services:
 
   mongoDB:
     image: mongo
-    restart: always
+    restart: unless-stopped
     ports:
       - "27017:27017"
     environment:
@@ -131,7 +152,7 @@ services:
     image: traefik:v2.6
     # Enables the web UI and tells Traefik to listen to docker
     container_name: traefik
-    restart: always
+    restart: unless-stopped
     ports:
       # The HTTP port
       - "80:80"
@@ -174,33 +195,6 @@ services:
     - "15672:15672"
     networks:
       - rabbitMQnet
-
-  #postgres:
-  #    image: postgres
-  #    volumes:
-  #      - postgres_data:/var/lib/postgresql/data
-  #    environment:
-  #      POSTGRES_DB: keycloak
-  #      POSTGRES_USER: keycloak
-  #      POSTGRES_PASSWORD: password
-  #
-  #keycloak:
-  #    image: quay.io/keycloak/keycloak:legacy
-  #    environment:
-  #      DB_VENDOR: POSTGRES
-  #      DB_ADDR: postgres
-  #      DB_DATABASE: keycloak
-  #      DB_USER: keycloak
-  #      DB_SCHEMA: public
-  #      DB_PASSWORD: password
-  #      KEYCLOAK_USER: admin
-  #      KEYCLOAK_PASSWORD: Pa55w0rd
-  #      # Uncomment the line below if you want to specify JDBC parameters. The parameter below is just an example, and it shouldn't be used in production without knowledge. It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
-  #      #JDBC_PARAMS: "ssl=true"
-  #    ports:
-  #      - 9000:8080
-  #    depends_on:
-  #      - postgres
 
 secrets:
   kong_postgres_password:

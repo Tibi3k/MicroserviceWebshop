@@ -40,6 +40,14 @@ builder.Services.AddMassTransit(options => {
     });
 });
 
+//make sure that the message bus is ready
+builder.Services.AddOptions<MassTransitHostOptions>()
+    .Configure(options =>
+    {
+        options.WaitUntilStarted = true;
+        options.StartTimeout = TimeSpan.FromSeconds(30);
+    });
+
 builder.Services.AddScoped<IRabbitMQService, RabbitMQService>();
 
 //var options = new DbContextOptionsBuilder<ProductService.DAL.EfDbContext.ProductDbContext>().UseSqlServer(connectionString).Options;

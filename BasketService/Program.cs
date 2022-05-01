@@ -45,6 +45,11 @@ builder.Services.AddMassTransit(options => {
     });
 });
 
+builder.Services.AddOptions<MassTransitHostOptions>()
+    .Configure(options =>
+    {
+        options.WaitUntilStarted = true;
+    });
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.

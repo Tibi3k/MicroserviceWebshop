@@ -30,6 +30,13 @@ IHost host = Host.CreateDefaultBuilder(args)
                 });
             });
         });
+
+        services.AddOptions<MassTransitHostOptions>()
+            .Configure(options =>
+            {
+                options.WaitUntilStarted = true;
+                options.StartTimeout = TimeSpan.FromSeconds(30);
+            });
     })
     .Build();
 

@@ -1,11 +1,15 @@
 api:
   dashboard: true
+  insecure: true
 
 entryPoints:
   web:
     address: ":80"
   https:
     address: ":443"
+
+log:
+  level: DEBUG
 
 providers:
   docker:

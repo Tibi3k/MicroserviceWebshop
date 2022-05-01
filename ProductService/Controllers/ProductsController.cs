@@ -23,6 +23,10 @@ namespace ProductService.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<Product>> GetAllProducts() {
+            Console.WriteLine(HttpContext.Request.Headers.ToString());
+            Console.WriteLine("Token:" + HttpContext.Request.Headers["Authorization"]);
+            Console.WriteLine("ContentType:" + HttpContext.Request.Headers["Content-Type"]);
+            HttpContext.Response.Headers.Add("Authorization", HttpContext.Request.Headers["Authorization"]);
             return Ok(this.repository.List());
         }
 
