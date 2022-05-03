@@ -13,14 +13,6 @@ html, body {
     background-image: linear-gradient(to bottom right, rgb(235, 76, 171), rgb(227, 77, 171), rgb(218, 78, 170), rgb(210, 80, 170), rgb(202, 81, 170), rgb(193, 82, 170), rgb(185, 83, 169), rgb(176, 84, 169), rgb(168, 85, 169), rgb(160, 87, 169), rgb(151, 88, 168), rgb(143, 89, 168));
 
 }
-a{
-	padding: 0;
-	display: block;
-	justify-content: center;
-	align-items: center;
-	color: #fff;
-	text-decoration: none;
-}
 
 
   
@@ -80,7 +72,7 @@ a{
 .slider-menu > li:hover {
 	box-shadow: 0 50px 5px rgba(0, 0, 0, 0.15) inset;
 }
-.slider-menu > li:hover > a{
+.slider-menu > li:hover{
 	color: #faa;
 }
 .aeu-signature {

@@ -1,0 +1,27 @@
+<div class="box">
+    <mat-card>
+        <form [formGroup]="form" (submit)="onAddCategory()" class="main-form">
+          <mat-form-field >
+            <mat-label>Name</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="name"
+              placeholder="Name of the category"
+            />
+            <mat-error *ngIf="form.get('name')!.invalid"
+              >Please add a name!</mat-error
+            >
+          </mat-form-field>
+    
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            class="btn btn-add"
+          >
+          Add category
+          </button>
+        </form>
+      </mat-card>
+    </div>

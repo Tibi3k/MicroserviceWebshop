@@ -5,12 +5,13 @@
     <p *ngIf="lastPasswordInvalid" class="error">Helytelen jelszó</p>
     <form class="form" [formGroup]="form">
       <mat-card-content>
-        <mat-form-field appearance="fill" class="username" floatLabel="always">
+        <mat-form-field  class="username">
+          <mat-label>Username</mat-label>
           <input
             matInput
             placeholder="Username"
             formControlName="username"
-            type="email"
+            type="text"
             class="input-item"
             [(ngModel)]="username"
           />
@@ -19,7 +20,8 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="fill" class="password" controller>
+        <mat-form-field class="password" controller>
+          <mat-label>Password</mat-label>
           <input
             matInput
             placeholder="Password"
@@ -34,8 +36,8 @@
         </mat-form-field>
       </mat-card-content>
       <button
-        mat-stroked-button
-        color="accent"
+        mat-raised-button
+        color="primary"
         class="btn"
         (click)="onLogin()"
       >

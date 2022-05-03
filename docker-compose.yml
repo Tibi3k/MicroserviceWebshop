@@ -91,10 +91,10 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.product-service.rule=Host(`localhost`) && Path(`/api/products{any:.*}`, `/api/categories{any2:.*}`) && Method(`POST`, `DELETE`)"
+      - "traefik.http.routers.product-service.rule=Host(`localhost`) && Path(`/api/products{any:.*}`, `/api/categories{any2:.*}`) && Method(`POST`, `DELETE`, `PUT`)"
       - "traefik.http.routers.product-service.entrypoints=web"
      # - "traefik.http.middlewares.product-service.replacepath.path=/api/Products"
-      - "traefik.http.routers.product-service-free.rule=Host(`localhost`) && Path(`/api/products`, `/api/{any3:[0-9]+}/`) && Method(`GET`)"
+      - "traefik.http.routers.product-service-free.rule=Host(`localhost`) && Path(`/api/products`, `/api/products/{any3:[0-9]+}/`, `/api/categories{any2:.*}`) && Method(`GET`)"
       - "traefik.http.routers.product-service-free.entrypoints=web"
       - "traefik.http.routers.product-service-free.middlewares= testheader@docker"
       - "traefik.port=80"

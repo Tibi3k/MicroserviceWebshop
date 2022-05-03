@@ -51,7 +51,7 @@ public class AuthController : ControllerBase
         if (authUser == null)
             return Unauthorized();
         var token = GenerateJSONWebToken(authUser);
-        HttpContext.Response.Headers.Authorization = "Bearer:" + token;
+        HttpContext.Response.Headers.Authorization = "Bearer: " + token;
         return Ok(user);
     }
 
@@ -96,7 +96,6 @@ public class AuthController : ControllerBase
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                ClockSkew = TimeSpan.Zero
             }, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;

@@ -2,14 +2,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../services/auth.service';
-import { User } from '../services/user.model';
+import { User } from '../model/user.model';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
 
   constructor(private authService: AuthService, private router: Router) { }
   authenticatedUserSubscription: Subscription | undefined
@@ -23,9 +23,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   }
 
-   ngOnDestroy(): void {
-    this.authenticatedUserSubscription?.unsubscribe()
-  }
+  //  ngOnDestroy(): void {
+  //   this.authenticatedUserSubscription?.unsubscribe()
+  // }
 
   onLoginClicked(){
     if(this.currentUser == null)

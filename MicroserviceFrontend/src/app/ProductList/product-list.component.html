@@ -1,8 +1,29 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<button 
+  mat-raised-button 
+  color="warn" 
+  (click)="addProduct()">
+  AddProduct
+</button>
+<button 
+  mat-raised-button 
+  color="warn" 
+  (click)="addProductMock()">
+  AddProduct
+</button>
+
+<button 
+  mat-raised-button 
+  color="primary" 
+  (click)="addCategory()">
+  AddCategory
+</button>
+<!-- *ngIf="this.currentUser != null"  -->
+
+<table #myTable mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
     <ng-container matColumnDef="#">
       <th mat-header-cell *matHeaderCellDef> # </th>
-      <td mat-cell *matCellDef="let element"> {{element.i}} </td>
+      <td mat-cell *matCellDef="let element;let i = index"> {{i+1}} </td>
     </ng-container>
   
     <ng-container matColumnDef="name">
@@ -11,8 +32,8 @@
     </ng-container>
   
     <ng-container matColumnDef="price">
-      <th mat-header-cell *matHeaderCellDef> Weight </th>
-      <td mat-cell *matCellDef="let element"> {{element.price}} </td>
+      <th mat-header-cell *matHeaderCellDef> Price </th>
+      <td mat-cell *matCellDef="let element"> {{element.price}}ft </td>
     </ng-container>
   
     <ng-container matColumnDef="description">
@@ -30,7 +51,15 @@
         <td mat-cell *matCellDef="let element"> {{element.category}} </td>
     </ng-container>
 
+    <ng-container matColumnDef="actions" class="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let element"> 
+        <button mat-raised-button color="primary"(click)="addToCart(element)">Add To Cart</button>  
+        <button mat-raised-button color="edit" (click)="editProduct(element)" >Edit</button>  
+        <button mat-raised-button color="warn">Delete</button>  
+      </td>
+  </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
   </table>

@@ -79,6 +79,60 @@ namespace ProductService.DAL {
             return ToModel(product);
         }
 
+
+        public Product? UpdateProduct(Product product) {
+            var dbProduct = db.Products
+                .Where(p => p.Id == product.Id)
+                .SingleOrDefault();
+
+            var category = db.Categories
+                .Where(c => c.Name == product.Category)
+                .SingleOrDefault();
+
+            if (dbProduct == null || category == null) {
+                return null;
+            }
+
+            dbProduct.Price = product.Price;
+            dbProduct.Name = product.Name;
+            dbProduct.Quantity = product.Quantity;
+            dbProduct.Description = product.Description;
+            dbProduct.Category = category;
+            db.SaveChanges();
+            return ToModel(dbProduct);
+        }
+
+        public IEnumerable<Category> ListCategories() {
+            return this.db.Categories
+                .Select(prod => new Category { 
+                    Id = prod.Id,
+                    Name = prod.Name
+                })
+                .ToList(); 
+        }
+
+        public Category AddCategory(string categoryName) {
+            var alreadyExists = db.Categories.SingleOrDefault(c => c.Name == categoryName);
+            if (alreadyExists != null) {
+                return new Category
+                {
+                    Id = alreadyExists.Id,
+                    Name = alreadyExists.Name
+                };
+            }
+
+            var dbCategory = new DbCategory {
+                Name = categoryName
+            };
+            db.Categories.Add(dbCategory);
+            db.SaveChanges();
+            return new Category
+            {
+                Id = dbCategory.Id,
+                Name = dbCategory.Name
+            };
+        }
+
         private static Model.Product ToModel(DbProduct value)
         {
             return new Model.Product(value.Id, value.Name, value.Description, value.Price, value.Quantity, value.Category.Name);

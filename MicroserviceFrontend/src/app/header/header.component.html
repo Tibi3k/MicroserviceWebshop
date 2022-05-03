@@ -3,13 +3,13 @@
 	<div class="header-bar">
 		<h1 class="logo">C</h1>
 		<ul class="slider-menu">
-			<li><a routerLink="/" routerLinkActive="mat-accent">
+			<li routerLink="/">
 					Products
-				</a></li>
-			<li *ngIf="this.currentUser != null"><a routerLink="/basket" routerLinkActive="mat-accent">
+				</li>
+			<li *ngIf="this.currentUser != null" routerLink="/basket"><a routerLink="/basket" routerLinkActive="mat-accent">
 					Basket
 				</a></li>
-			<li *ngIf="this.currentUser != null"><a routerLink="/orders" routerLinkActive="mat-accent">
+			<li *ngIf="this.currentUser != null" routerLink="/orders"><a routerLink="/orders" routerLinkActive="mat-accent">
 					Orders
 				</a></li>
 			<li (click)="onLoginClicked()">

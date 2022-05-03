@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BackendService, Product } from './services/backend.service';
+import { Product } from './model/product.model';
+import { BackendService } from './services/backend.service';
 
 @Component({
   selector: 'app-root',

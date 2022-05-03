@@ -26,7 +26,7 @@ export class LoginComponent {
       if(this.form.valid){
         this.authService.authenticateUser(this.form.value.username, this.form.value.password)
         .subscribe({
-          next: (user) => this.router.navigate(['create']),
+          next: (user) => this.router.navigate(['']),
           error: (error) => this.lastPasswordInvalid = true
         })
       }

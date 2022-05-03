@@ -1,17 +1,23 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Observable, of, map, BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { User } from './user.model';
+import { User } from '../model/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements OnInit {
 
   private API_URL: string = environment.apiUrl
   private currentUser: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null)
   constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    let token = localStorage.getItem("JWT");
+
+
+  }
 
   addJWTtoLocalStrorage(token: string){
     localStorage.setItem("JWT", token);
@@ -37,6 +43,7 @@ export class AuthService {
       return user
     }))
   }
+
 
   getCurrentUserListener(){
     return this.currentUser

@@ -11,6 +11,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatSelectModule} from '@angular/material/select';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatRadioModule} from '@angular/material/radio';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,6 +26,9 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { BasketComponent } from './basket/basket.component';
 import { OrderComponent } from './order/order.component';
+import { CreateProductComponent } from './create-product/create-product.component';
+import { AuthGuard } from './services/auth.guard';
+import { CreateCategoryComponent } from './create-category/create-category.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +38,9 @@ import { OrderComponent } from './order/order.component';
     LoginComponent,
     RegisterComponent,
     BasketComponent,
-    OrderComponent
+    OrderComponent,
+    CreateProductComponent,
+    CreateCategoryComponent
   ],
   imports: [
     BrowserModule,
@@ -48,10 +56,14 @@ import { OrderComponent } from './order/order.component';
     ReactiveFormsModule,
     MatInputModule,
     BrowserAnimationsModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatRadioModule
   ],
   providers: [
     BackendService,
-    {provide: HTTP_INTERCEPTORS, useClass: AuthorizationInterceptor, multi: true}
+    {provide: HTTP_INTERCEPTORS, useClass: AuthorizationInterceptor, multi: true},
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })

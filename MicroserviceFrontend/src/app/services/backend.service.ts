@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { Product, ProductCreate } from '../model/product.model';
+import { Category } from '../model/category.model';
 
 
 @Injectable({
@@ -35,17 +37,29 @@ export class BackendService {
         )
    }
 
-   public createProduct(product: Product): Observable<string>{
+   public createProduct(product: ProductCreate): Observable<string>{
      const body = JSON.stringify(product);
      return this.http
-       .post<string>(this.API_URL + 'api/products', body).pipe(
+       .post<string>(
+           this.API_URL + 'api/products', 
+           body, 
+           {headers: this.getHeaders()
+        }).pipe(
          catchError(this.handleError)
        )
    }
 
+   public editProduct(product: Product): Observable<string>{
+    const body = JSON.stringify(product);
+    return this.http
+      .put<string>(this.API_URL + 'api/products', body, {headers: this.getHeaders()}).pipe(
+        catchError(this.handleError)
+      )
+  }
+
    public deleteProduct(product: Product): Observable<string>{
     return this.http
-      .delete<string>(this.API_URL + `api/products/${product.Id}`)
+      .delete<string>(this.API_URL + `api/products/${product.id}/`)
       .pipe(
         catchError(this.handleError)
       )
@@ -53,18 +67,41 @@ export class BackendService {
 
   public AddProductToBakset(amount: Number, userId: Number, productID: Number){
       return this.http
-        .post(this.API_URL + `api/products/${productID}/tobasket?amount=${amount}&userID=${userId}`, {})
+        .post(
+          this.API_URL + `api/products/${productID}/tobasket?amount=${amount}&userID=${userId}`,
+           {},
+           {headers: this.getHeaders()}
+        )
         .pipe(
           catchError(this.handleError)
         )
   }
+
+  public AddCategory(name: string): Observable<Category>{
+    const body = JSON.stringify(name);
+    return this.http
+      .post<Category>(
+        this.API_URL + 'api/categories',
+         body,
+         {headers: this.getHeaders() }
+        ).pipe(
+        catchError(this.handleError)
+      )
+  }
+
+  public getAllCategories(): Observable<Array<Category>>{
+    return this.http
+      .get<Array<Category>>(this.API_URL + 'api/categories')
+      .pipe(
+        catchError(this.handleError)
+      )
+
+  }
+
+  getHeaders(): HttpHeaders{
+    let headers = new HttpHeaders();
+    headers = headers.set('Content-Type', 'application/json; charset=utf-8');
+    return headers
+  }
 }
 
-export interface Product {
-  Id: Number;
-  Name: String;
-  Description: String;
-  Price: Number
-  Quantity: Number
-  Category: String
-}

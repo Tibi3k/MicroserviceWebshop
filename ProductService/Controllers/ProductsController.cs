@@ -69,6 +69,17 @@ namespace ProductService.Controllers
             return NoContent();
         }
 
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Product> UpdateProduct(Product product)
+        {
+            var result = this.repository.UpdateProduct(product);
+            if (result == null)
+                return BadRequest();
+            return Ok();
+        }
+
         [HttpPost("{productID}/tobasket")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

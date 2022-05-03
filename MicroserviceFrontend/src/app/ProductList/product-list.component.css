@@ -1,3 +1,17 @@
 table {
     width: 100%;
   }
+
+  .actions{
+    width: fit-content;
+  }
+
+  .mat-column-actions{
+      flex: none;
+      width: 120px;
+  }
+
+  .mat-edit {
+    background-color: orange;
+    color: black;
+}
