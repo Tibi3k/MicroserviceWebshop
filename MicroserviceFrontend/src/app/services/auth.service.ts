@@ -42,5 +42,11 @@ export class AuthService {
     return this.currentUser
   }
 
+  logOut(): Observable<unknown>{
+    localStorage.clear()
+    this.currentUser.next(null)
+    return new Observable
+  }
+
   
 }

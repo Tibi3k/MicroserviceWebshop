@@ -3,9 +3,18 @@
 	<div class="header-bar">
 		<h1 class="logo">C</h1>
 		<ul class="slider-menu">
-			<li>Home</li>
-			<li>About</li>
-			<li>Services</li>
+			<li><a routerLink="/" routerLinkActive="mat-accent">
+					Products
+				</a></li>
+			<li *ngIf="this.currentUser != null"><a routerLink="/basket" routerLinkActive="mat-accent">
+					Basket
+				</a></li>
+			<li *ngIf="this.currentUser != null"><a routerLink="/orders" routerLinkActive="mat-accent">
+					Orders
+				</a></li>
+			<li (click)="onLoginClicked()">
+					{{this.currentUser == null ? "Log In" : "Log Out"}}
+			</li>
 		</ul>
 	</div>
 </div>

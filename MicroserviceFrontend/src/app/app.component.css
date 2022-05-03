@@ -1,0 +1,19 @@
+#page-container {
+    position: relative;
+    min-height: 100%;
+    /* background-image: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%); */
+    background-image: linear-gradient(120deg, #0584f2 0%, #0aaff1 50%); 
+  }
+  
+  #content-wrap {
+    padding-bottom: 280px;
+    max-width: 1000px; 
+    margin: 0 auto !important; 
+    float: none !important;   }
+  
+  @media screen and (max-width: 767px) {
+    #content-wrap {
+      padding-bottom: 520px;
+    }
+  }
+

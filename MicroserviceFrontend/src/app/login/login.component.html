@@ -1,0 +1,49 @@
+<div class="login">
+<mat-card class="box">
+    <mat-card-header>
+    </mat-card-header>
+    <p *ngIf="lastPasswordInvalid" class="error">Helytelen jelszó</p>
+    <form class="form" [formGroup]="form">
+      <mat-card-content>
+        <mat-form-field appearance="fill" class="username" floatLabel="always">
+          <input
+            matInput
+            placeholder="Username"
+            formControlName="username"
+            type="email"
+            class="input-item"
+            [(ngModel)]="username"
+          />
+          <mat-error *ngIf="form.get('username')!.invalid">
+            Please enter your username!
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="password" controller>
+          <input
+            matInput
+            placeholder="Password"
+            formControlName="password"
+            type="password"
+            class="input-item"
+          />
+          <mat-error *ngIf="form.get('password')!.invalid">
+                Please enter your password!
+            </mat-error
+          >
+        </mat-form-field>
+      </mat-card-content>
+      <button
+        mat-stroked-button
+        color="accent"
+        class="btn"
+        (click)="onLogin()"
+      >
+        Log in
+      </button>
+      <div class="register-prompt">
+        <span>Dont have an account? <a routerLink="/register" routerLinkActive="mat-accent">Sign Up</a></span>
+      </div>
+    </form>
+  </mat-card>
+</div>
