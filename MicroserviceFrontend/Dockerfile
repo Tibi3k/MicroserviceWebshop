@@ -8,7 +8,7 @@ WORKDIR /usr/local/app
 
 # copy package.json
 COPY ["MicroserviceFrontend/package.json", "."]
-COPY ["MicroserviceFrontend/package-lock.json", "."]
+#COPY ["MicroserviceFrontend/package-lock.json", "."]
 
 # Install all the dependencies
 RUN npm install
@@ -27,6 +27,9 @@ FROM nginx:latest
 
 # Copy the build output to replace the default nginx contents.
 COPY --from=build /usr/local/app/dist/MicroserviceFrontend /usr/share/nginx/html
+
+#copy nginx config file to send all routes to index.html
+COPY ./../config/nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80
 EXPOSE 80
