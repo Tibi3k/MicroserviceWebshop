@@ -1,10 +1,62 @@
-<p>basket works!</p>
-<p>basket works!</p>
-<p>basket works!</p>
-<p>basket works!</p>
-<p>basket works!</p>
-<p>basket works!</p>
-<p>basket works!</p>
-<p>basket works!</p>
-<p>basket works!</p>
-<p>basket works!</p>
+<table #myTable mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="#">
+      <th mat-header-cell *matHeaderCellDef> # </th>
+      <td mat-cell *matCellDef="let element;let i = index"> {{i+1}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef> Price </th>
+      <td mat-cell *matCellDef="let element"> {{element.price}}ft </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef> Description </th>
+      <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef> Quantity </th>
+        <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef> Category </th>
+        <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="lastEdited">
+        <th mat-header-cell *matHeaderCellDef> Added at </th>
+        <td mat-cell *matCellDef="let element"> {{element.addTime}} </td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="actions" class="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let element"> 
+        <button mat-raised-button color="warn" (click)="removeItemFromCart(element)">Remove Item</button>  
+      </td>
+  </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
+  </table>
+
+  <div class="bottom" *ngIf="this.basket != null && this.basket?.products?.length != 0">
+    <div>
+        <h3>Total cost: {{this.basket?.totalCost}}$</h3>
+    </div>
+    <div>
+        <button mat-raised-button color="primary" (click)="orderBasket()">Order</button>
+    </div>
+  </div>
+  <div class="no-content" *ngIf="this.basket == null || this.basket?.products?.length == 0">
+    <div>
+        <h3>Your basket is empty</h3>
+    </div>
+  </div>

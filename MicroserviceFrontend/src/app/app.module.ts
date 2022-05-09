@@ -29,6 +29,9 @@ import { OrderComponent } from './order/order.component';
 import { CreateProductComponent } from './create-product/create-product.component';
 import { AuthGuard } from './services/auth.guard';
 import { CreateCategoryComponent } from './create-category/create-category.component';
+import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
+import { IPublicClientApplication,PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -40,7 +43,7 @@ import { CreateCategoryComponent } from './create-category/create-category.compo
     BasketComponent,
     OrderComponent,
     CreateProductComponent,
-    CreateCategoryComponent
+    CreateCategoryComponent,
   ],
   imports: [
     BrowserModule,
@@ -58,13 +61,88 @@ import { CreateCategoryComponent } from './create-category/create-category.compo
     BrowserAnimationsModule,
     MatSelectModule,
     MatCheckboxModule,
-    MatRadioModule
+    MatRadioModule,
+    MsalModule
   ],
   providers: [
     BackendService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthorizationInterceptor, multi: true},
-    AuthGuard
+    AuthGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MsalInterceptor,
+      multi: true
+    },
+    {
+      provide: MSAL_INSTANCE,
+      useFactory: MSALInstanceFactory
+    },
+    {
+      provide: MSAL_GUARD_CONFIG,
+      useFactory: MSALGuardConfigFactory
+    },
+    {
+      provide: MSAL_INTERCEPTOR_CONFIG,
+      useFactory: MSALInterceptorConfigFactory
+    },
+    MsalService,
+    MsalGuard,
+    MsalBroadcastService
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+
+export function loggerCallback(logLevel: LogLevel, message: string) {
+  console.log(message);
+}
+
+export function MSALInstanceFactory(): IPublicClientApplication {
+  return new PublicClientApplication({
+    auth: {
+      clientId: environment.clientId, 
+      authority: environment.authority, 
+      redirectUri: environment.redirectUrl,
+      knownAuthorities: ['microwebshop.b2clogin.com'],
+      postLogoutRedirectUri: '/'
+    },
+    cache: {
+      cacheLocation: BrowserCacheLocation.LocalStorage,
+    },
+    system: {
+      loggerOptions: {
+        loggerCallback,
+        logLevel: LogLevel.Info,
+        piiLoggingEnabled: false
+      }
+    }
+  });
+}
+
+export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
+  const protectedResourceMap = new Map<string, Array<string>>();
+  // protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', ['user.read']); // Prod environment. Uncomment to use.
+  protectedResourceMap.set('http://localhost/api/products/public', []);
+  protectedResourceMap.set('http://localhost/api/categories/get', []);
+  protectedResourceMap.set('http://localhost/api/products/protected', [environment.scopeUrl]);
+  protectedResourceMap.set('http://localhost/api/categories/create', [environment.scopeUrl]);
+  protectedResourceMap.set('http://localhost/api/basket/', [environment.scopeUrl]);
+  protectedResourceMap.set('http://localhost/api/order/', [environment.scopeUrl]);
+
+  return {
+    interactionType: InteractionType.Popup,
+    protectedResourceMap
+  };
+}
+
+export function MSALGuardConfigFactory(): MsalGuardConfiguration {
+  return { 
+    interactionType: InteractionType.Popup,
+    authRequest: {
+      scopes: ['user.read']
+    },
+    loginFailedRoute: '/login-failed'
+  };
+}
+

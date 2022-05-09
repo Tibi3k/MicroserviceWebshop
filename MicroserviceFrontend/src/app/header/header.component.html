@@ -6,12 +6,12 @@
 			<li routerLink="/">
 					Products
 				</li>
-			<li *ngIf="this.currentUser != null" routerLink="/basket"><a routerLink="/basket" routerLinkActive="mat-accent">
+			<li *ngIf="this.currentUser != null" routerLink="/basket">
 					Basket
-				</a></li>
-			<li *ngIf="this.currentUser != null" routerLink="/orders"><a routerLink="/orders" routerLinkActive="mat-accent">
+				</li>
+			<li *ngIf="this.currentUser != null" routerLink="/orders">
 					Orders
-				</a></li>
+				</li>
 			<li (click)="onLoginClicked()">
 					{{this.currentUser == null ? "Log In" : "Log Out"}}
 			</li>

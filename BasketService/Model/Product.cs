@@ -19,6 +19,9 @@
         public int Price { get; set; }
         public int Quantity { get; set; }
         public string Category { get; set; }
+        public string BasketSubId { get; set; }
+        public DateTime AddTime { get; set; }
+        
 
         public override string ToString()
         {

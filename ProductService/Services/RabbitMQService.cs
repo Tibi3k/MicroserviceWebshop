@@ -9,24 +9,20 @@ namespace ProductService.Services
     public class RabbitMQService : IRabbitMQService
     { 
         private readonly ISendEndpointProvider _sendEndpointProvider;
-        public RabbitMQService(ISendEndpointProvider sendEndpointProvider) {
+        public RabbitMQService(ISendEndpointProvider sendEndpointProvider)
+        {
             this._sendEndpointProvider = sendEndpointProvider;
         }
 
-        public void Send()
-        {
-
-        }
-
-
-
-        public async Task AddProductToBasket(Product product, int userId) {
+        public async Task AddProductToBasket(Product product, string userId, string email) {
             var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:ProductToBasketQueue3"));
             Console.WriteLine("sending product:" + product);
             await endpoint.Send<IProductWithUserId>(new
             {
                 Product = product,
-                UserId = userId
+                UserId = userId,
+                Email = email,
+                AddTime = DateTime.Now
             });
         }
     }
@@ -37,6 +33,8 @@ namespace BasketService.Services
     public interface IProductWithUserId
     {
         Product Product { get; set; }
-        int UserId { get; set; }
+        string UserId { get; set; }
+        string Email { get; set; }
+        DateTime AddTime { get; set; }
     }
 }

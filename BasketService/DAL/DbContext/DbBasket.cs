@@ -8,7 +8,8 @@ public class DbBasket
 {
     [BsonId]
     public ObjectId Id { get; set; }
-    public int UserId { get; set; }
+    public string UserId { get; set; }
+    public string Email { get; set; }
     public ICollection<DbProduct> Products { get; set; } = new List<DbProduct>();
     public DateTime LastEdited { get; set; }
     public int TotalCost { get; set; }
@@ -21,6 +22,7 @@ public class DbBasket
             Products = DbProduct.ToModel(this.Products),
             LastEdited = this.LastEdited,
             TotalCost = this.TotalCost,
+            Email = this.Email
         };
     }
 }

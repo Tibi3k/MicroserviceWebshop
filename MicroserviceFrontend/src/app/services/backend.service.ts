@@ -23,7 +23,7 @@ export class BackendService {
 
    public getAllProducts(): Observable<Array<Product>>{
      return this.http
-      .get<Array<Product>>(this.API_URL + 'api/products')
+      .get<Array<Product>>(this.API_URL + 'api/products/public')
       .pipe(
         catchError(this.handleError)
       )
@@ -31,7 +31,7 @@ export class BackendService {
 
    public getProductById(id: Number): Observable<Product>{
       return this.http
-        .get<Product>(this.API_URL + `api/product/${id}`)
+        .get<Product>(this.API_URL + `api/products/public/${id}`)
         .pipe(
           catchError(this.handleError)
         )
@@ -41,7 +41,7 @@ export class BackendService {
      const body = JSON.stringify(product);
      return this.http
        .post<string>(
-           this.API_URL + 'api/products', 
+           this.API_URL + 'api/products/protected', 
            body, 
            {headers: this.getHeaders()
         }).pipe(
@@ -52,23 +52,23 @@ export class BackendService {
    public editProduct(product: Product): Observable<string>{
     const body = JSON.stringify(product);
     return this.http
-      .put<string>(this.API_URL + 'api/products', body, {headers: this.getHeaders()}).pipe(
+      .put<string>(this.API_URL + 'api/products/protected', body, {headers: this.getHeaders()}).pipe(
         catchError(this.handleError)
       )
   }
 
    public deleteProduct(product: Product): Observable<string>{
     return this.http
-      .delete<string>(this.API_URL + `api/products/${product.id}/`)
+      .delete<string>(this.API_URL + `api/products/protected/${product.id}/`)
       .pipe(
         catchError(this.handleError)
       )
   }
 
-  public AddProductToBakset(amount: Number, userId: Number, productID: Number){
+  public AddProductToBakset(amount: Number, productID: Number){
       return this.http
         .post(
-          this.API_URL + `api/products/${productID}/tobasket?amount=${amount}&userID=${userId}`,
+          this.API_URL + `api/products/protected/${productID}/tobasket?amount=${amount}`,
            {},
            {headers: this.getHeaders()}
         )
@@ -81,7 +81,7 @@ export class BackendService {
     const body = JSON.stringify(name);
     return this.http
       .post<Category>(
-        this.API_URL + 'api/categories',
+        this.API_URL + 'api/categories/create',
          body,
          {headers: this.getHeaders() }
         ).pipe(
@@ -91,7 +91,7 @@ export class BackendService {
 
   public getAllCategories(): Observable<Array<Category>>{
     return this.http
-      .get<Array<Category>>(this.API_URL + 'api/categories')
+      .get<Array<Category>>(this.API_URL + 'api/categories/get')
       .pipe(
         catchError(this.handleError)
       )

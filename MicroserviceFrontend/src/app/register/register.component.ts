@@ -27,12 +27,12 @@ export class RegisterComponent {
   lastPasswordInvalid = false
 
   onRegister(){
-    if(this.form.valid){
-      this.authService.registerUser(this.form.value.username, this.form.value.password, this.form.value.email)
-      .subscribe({
-        next: (user) => this.router.navigate(['']),
-        error: (error) => this.lastPasswordInvalid = true
-      })
-    }
+    // if(this.form.valid){
+    //   this.authService.registerUser(this.form.value.username, this.form.value.password, this.form.value.email)
+    //   .subscribe({
+    //     next: (user) => this.router.navigate(['']),
+    //     error: (error) => this.lastPasswordInvalid = true
+    //   })
+    // }
   }
 }

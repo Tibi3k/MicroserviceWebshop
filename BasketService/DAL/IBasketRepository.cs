@@ -6,11 +6,10 @@ namespace BasketService.DAL
     {
         Task<List<UserBasket>> getAllBasketsAsync();
         UserBasket FindBasketById(string id);
-        Task<UserBasket?> FindBasketByUserIdAsync(int id);
-        Task AddProductToBasketAsync(Product product, int userId);
+        Task<UserBasket?> FindBasketByUserIdAsync(string id);
+        Task AddProductToBasketAsync(Product product, string userId, string email);
 
-        Task<long> DeleteProductFromBasketAsync(int userId, int productId);
-
-        void Test();
+        Task<long> DeleteProductFromBasketAsync(string userId, string productSubId);
+        Task ClearBasket(string userId);
     }
 }

@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProductService.DAL;
 using ProductService.Model;
+using System.Security.Claims;
 
 namespace ProductService.Controllers
 {
@@ -15,17 +17,19 @@ namespace ProductService.Controllers
             this.repository = respository;
         }
 
-
-        [HttpGet]
+        [AllowAnonymous]
+        [HttpGet("get")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<Category>> GetAllCategories()
         {
             return Ok(this.repository.ListCategories());
         }
 
-        [HttpPost]
+        [Authorize(Policy = "Admin")]
+        [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<Category> CreateCategory([FromBody] string name) {
+            Console.WriteLine("name:" + HttpContext?.User?.Identity?.Name);
             var result = this.repository.AddCategory(name);
             return Ok(result);
         }

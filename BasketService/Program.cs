@@ -1,6 +1,8 @@
 using BasketService.DAL;
 using BasketService.Services;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
 using MongoDB.Driver;
 using static BasketService.Services.RabbitMQService;
 
@@ -45,6 +47,17 @@ builder.Services.AddMassTransit(options => {
     });
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("User", policy =>
+        policy.RequireClaim("http://schemas.microsoft.com/identity/claims/objectidentifier"));
+    options.AddPolicy("Admin", policy =>
+        policy.RequireClaim("jobTitle", "Admin"));
+});
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAdB2C"));
+
 builder.Services.AddOptions<MassTransitHostOptions>()
     .Configure(options =>
     {
@@ -61,6 +74,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

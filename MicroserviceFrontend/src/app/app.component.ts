@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Product } from './model/product.model';
-import { BackendService } from './services/backend.service';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -10,8 +9,8 @@ import { BackendService } from './services/backend.service';
 export class AppComponent implements OnInit {
   title = 'MicroserviceFrontend';
 
-  constructor(private backendService: BackendService){}
+  constructor(private authService: AuthService){}
   ngOnInit(){
-    this.backendService.getAllProducts().subscribe((products: Array<Product>) => console.log(products))
+    this.authService.tryForLogin()
   }
 }

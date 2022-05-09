@@ -28,22 +28,21 @@ networks:
 
 
 services:
-  auth-service:
+  order-service:
     build:
       context: .
-      dockerfile: AuthService/Dockerfile
+      dockerfile: OrderService/Dockerfile
     restart: unless-stopped
-    ports:
-      - "6200:80" 
     networks:
       - products-net
       - rabbitMQnet
       - traefik-net
+      - basket-net
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.auth-service.rule=Host(`localhost`) && Path(`/auth{any:.*}`)"
+      - "traefik.http.routers.auth-service.rule=Host(`localhost`) && Path(`/api/order{any:.*}`)"
       - "traefik.http.routers.auth-service.entrypoints=web"
-      - "traefik.port=6200"
+      - "traefik.port=80"
   nginx:
     container_name: AngularNginx
     build: 
@@ -91,17 +90,14 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.product-service.rule=Host(`localhost`) && Path(`/api/products{any:.*}`, `/api/categories{any2:.*}`) && Method(`POST`, `DELETE`, `PUT`)"
+      - "traefik.http.routers.product-service.rule=Host(`localhost`) && Path(`/api/products{any:.*}`, `/api/categories{any2:.*}`) && Method(`POST`, `DELETE`, `PUT`,`GET`)"
       - "traefik.http.routers.product-service.entrypoints=web"
      # - "traefik.http.middlewares.product-service.replacepath.path=/api/Products"
-      - "traefik.http.routers.product-service-free.rule=Host(`localhost`) && Path(`/api/products`, `/api/products/{any3:[0-9]+}/`, `/api/categories{any2:.*}`) && Method(`GET`)"
-      - "traefik.http.routers.product-service-free.entrypoints=web"
-      - "traefik.http.routers.product-service-free.middlewares= testheader@docker"
       - "traefik.port=80"
-      - "traefik.http.middlewares.testheader.headers.accesscontrolalloworiginlist=http://localhost/"
-      - "traefik.http.middlewares.productsAuth.forwardauth.address=http://host.docker.internal:6200/auth"
-      - "traefik.http.middlewares.productsAuth.forwardauth.authResponseHeaders=Authorization"
-      - "traefik.http.routers.product-service.middlewares= testheader@docker, productsAuth@docker"
+      - "traefik.http.middlewares.testheader.headers.accesscontrolalloworiginlist=http://localhost"
+      #- "traefik.http.middlewares.productsAuth.forwardauth.address=http://host.docker.internal:6200/auth"
+      #- "traefik.http.middlewares.productsAuth.forwardauth.authResponseHeaders=Authorization"
+      - "traefik.http.routers.product-service.middlewares= testheader@docker"
       #- traefik.http.routers.product-service.middlewares=product-service@docker
       #- "traefik.http.routers.product-service.service=product-service@docker"
       #- "traefik.http.services.product-service.loadbalancer.server.port=80"

@@ -1,0 +1,28 @@
+table {
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .bottom {
+      width: 100%;
+      background-color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px
+  }
+
+  .mat-column-actions{
+    flex: none;
+    width: 120px;
+}
+
+.no-content{
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    user-select: none;
+}

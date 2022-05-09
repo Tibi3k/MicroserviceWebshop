@@ -23,6 +23,8 @@ public class DbProduct
     public int Price { get; set; }
     public int Quantity { get; set; }
     public string Category { get; set; }
+    public Guid BasketSubId { get; set; }
+    public DateTime AddTime { get; set; }
 
     public override string ToString()
     {
@@ -57,7 +59,9 @@ public class DbProduct
             Description = product.Description,
             Price = product.Price,
             Quantity = product.Quantity,
-            Category = product.Category
+            Category = product.Category,
+            AddTime = product.AddTime,
+            BasketSubId = Guid.Parse(product.BasketSubId)
         };
     }
 
@@ -70,7 +74,9 @@ public class DbProduct
             Description = product.Description,
             Price = product.Price,
             Quantity = product.Quantity,
-            Category = product.Category
+            Category = product.Category,
+            AddTime = product.AddTime,
+            BasketSubId = product.BasketSubId.ToString()
         };
     }
 }

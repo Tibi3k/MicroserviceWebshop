@@ -6,6 +6,7 @@ import { AuthService } from '../services/auth.service';
 import { User } from '../model/user.model';
 import { Product } from '../model/product.model';
 import { Router } from '@angular/router';
+import {AccountInfo} from '@azure/msal-browser'
 
 @Component({
   selector: 'app-product-list',
@@ -15,15 +16,15 @@ import { Router } from '@angular/router';
 export class ProductListComponent implements OnInit {
   displayedColumns: string[] = ['#', 'name', 'price', 'description', 'quantity', 'category', 'actions'];
   dataSource: Array<Product> = [];
-  currentUser: User | null = null
+  currentUser: AccountInfo | null = null
   @ViewChild(MatTable) myTable: MatTable<any> | undefined;
-  userSubscription!: BehaviorSubject<User | null>
+  userSubscription!: BehaviorSubject<AccountInfo | null>
   constructor(
     private backendService: BackendService, 
     private authService: AuthService,
     private router: Router
   ){}
-
+  isUserAdmin: boolean = false
   ngOnInit(){
      this.backendService.getAllProducts().subscribe({
        next: (products) => { this.dataSource = products},
@@ -34,6 +35,7 @@ export class ProductListComponent implements OnInit {
      this.userSubscription = this.authService.getCurrentUserListener()
      this.userSubscription.subscribe(user => {
        this.currentUser = user
+       this.isUserAdmin =  this.authService.isUserAdmin()
      })
   }
 
@@ -59,17 +61,27 @@ export class ProductListComponent implements OnInit {
     this.router.navigate(['createcategory'])
   }
 
-  // ngOnDestroy(){
-  //   this.userSubscription?.unsubscribe()
-  // }
 
   addToCart(product: Product){
-    console.log('id:' + product.id)
+    this.backendService.AddProductToBakset(1, product.id)
+      .subscribe(result => {
+        console.log('added: ' + product.id)
+      })
   }
 
   editProduct(product: Product){
     console.log('id:' + product.id)
     this.router.navigate(['edit', product.id])
+  }
+
+  deleteProduct(product: Product){
+    this.backendService.deleteProduct(product)
+      .subscribe(_ =>      
+        this.backendService.getAllProducts().subscribe({
+        next: (products) => { this.dataSource = products},
+        error: (error) => { console.log(`error: ${error.message}`)},
+        complete: () => {}
+      }))
   }
 
 }
