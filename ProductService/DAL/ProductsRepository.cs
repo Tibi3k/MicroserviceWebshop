@@ -28,8 +28,10 @@ namespace ProductService.DAL {
             return ToModel(dbProduct);
         }
 
-        public Product AddNewProduct(CreateProduct newProduct) {
-            using (var tran = db.Database.BeginTransaction(System.Data.IsolationLevel.RepeatableRead)) {
+        public Product AddNewProduct(CreateProduct newProduct)
+        {
+            var strategy = db.Database.CreateExecutionStrategy();
+            //using (var tran = db.Database.BeginTransaction(System.Data.IsolationLevel.RepeatableRead)) {
 
                 //Check if product exists
                 var existingProduct = db.Products
@@ -59,10 +61,17 @@ namespace ProductService.DAL {
                     Description = newProduct.Description,
                 };
                 db.Products.Add(toInsert);
-                db.SaveChanges();
-                tran.Commit();
+            strategy.ExecuteInTransaction(
+                db,
+                operation: context => { context.SaveChanges(acceptAllChangesOnSuccess: false); },
+                verifySucceeded: context => context.Products.AsNoTracking().Any(p => p.Id == toInsert.Id)
+             );
+            db.ChangeTracker.AcceptAllChanges();
+            Console.WriteLine("transaction compoleted");
+                //db.SaveChanges();
+                //tran.Commit();
                 return ToModel(toInsert);
-            }
+            //}
         }
 
         public Product? DeleteProduct(int id) {

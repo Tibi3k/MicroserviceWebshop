@@ -100,5 +100,12 @@ namespace BasketService.DAL
 
             await basketsCollection.DeleteOneAsync(filter: b => b.UserId == userId);
         }
+
+        public async Task<int> GetBasketSize(string userId) {
+            var basket = await basketsCollection.Find(b => b.UserId == userId).SingleOrDefaultAsync();
+            if (basket == null)
+                return 0;
+            return basket.Products.Count;
+        }   
     }
 }

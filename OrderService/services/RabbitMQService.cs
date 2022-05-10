@@ -21,6 +21,7 @@ namespace OrderService.services
                 OrderDate = context.Message.OrderTime,
                 OrderId = context.Message.OrderId
             };
+            Console.WriteLine("Products recived" + orderItem.products);
             await repository.AddNewOrder(orderItem,context.Message.Email, context.Message.Name, context.Message.UserId);
         }
     }

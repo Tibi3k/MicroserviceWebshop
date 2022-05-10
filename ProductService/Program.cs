@@ -5,6 +5,7 @@ using ProductService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
+using Hellang.Middleware.ProblemDetails;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,19 +17,26 @@ builder.Services.AddEndpointsApiExplorer();
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
 
 builder.Services.AddDbContext<ProductService.DAL.EfDbContext.ProductDbContext>(options => {
-    options.UseSqlServer(connectionString
-    //,
-    //sqlServerOptionsAction: sqlOptions =>
-    //{
-    //   sqlOptions.EnableRetryOnFailure(
-    //   maxRetryCount: 255,
-    //   maxRetryDelay: TimeSpan.FromSeconds(1),
-    //   errorNumbersToAdd: null);
-    //}
+    options.UseSqlServer(connectionString, 
+    sqlOptions => sqlOptions.EnableRetryOnFailure(
+       maxRetryCount: 10,
+       maxRetryDelay: TimeSpan.FromSeconds(10),
+       errorNumbersToAdd: null)
     );
 });
 builder.Services.AddScoped<ProductService.DAL.IProductsRepository, ProductService.DAL.ProductsRepository>();
-//builder.Services.AddScoped<ProductService.DAL.EfDbContext.ProductDbContext>();
+
+builder.Services.AddProblemDetails(options =>
+{
+    options.IncludeExceptionDetails = (ctx, ex) => false;
+    options.Map<Exception>(
+        (ctx, ex) =>
+        {
+            var pd = StatusCodeProblemDetails.Create(StatusCodes.Status500InternalServerError);
+            pd.Title = "Something went wrong, please try again later!";
+            return pd;
+        });
+});
 
 //initiate RabbitMQ for DI
 builder.Services.AddMassTransit(options => {
@@ -79,6 +87,7 @@ using (var serviceScope = app.Services.CreateScope())
     var context = serviceScope.ServiceProvider.GetRequiredService<ProductService.DAL.EfDbContext.ProductDbContext>();
     context.Database.EnsureCreated();
 }
+app.UseProblemDetails();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -88,6 +97,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors("default");
 app.UseHttpsRedirection();
+
 
 app.UseAuthentication();
 // End of the block you add

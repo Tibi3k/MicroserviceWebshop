@@ -50,7 +50,8 @@ namespace BasketService.Services
             await endpoint.Send<IBasketTransfer>(new
             {
                 Email = basket.Email,
-                UserBasket = basket,
+                OrderId = basket.Id,
+                Products = basket.Products,
                 Name = name,
                 UserId = basket.UserId,
                 TotalCost = basket.TotalCost,

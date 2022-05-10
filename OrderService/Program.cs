@@ -34,7 +34,7 @@ builder.Services.AddMassTransit(options => {
 
         cfg.ReceiveEndpoint("BasketToOrderQueue", e =>
         {
-            var service = context.GetRequiredService(typeof(IOrderRepository)) as OrderRepository;
+            var service = context.GetRequiredService(typeof(IOrderRepository)) as IOrderRepository;
             e.Consumer(() => new OrderSubmittedEventConsumer(service));
             e.RethrowFaultedMessages();
         });

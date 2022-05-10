@@ -40,9 +40,12 @@ services:
       - basket-net
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.auth-service.rule=Host(`localhost`) && Path(`/api/order{any:.*}`)"
+      - "traefik.http.routers.auth-service.rule=Host(`localhost`) && Path(`/api/orders{any:.*}`)"
       - "traefik.http.routers.auth-service.entrypoints=web"
       - "traefik.port=80"
+    depends_on:
+      - RabbitMQ
+      - mongoDB
   nginx:
     container_name: AngularNginx
     build: 
@@ -69,6 +72,8 @@ services:
     restart: unless-stopped
     networks:
       - rabbitMQnet
+    depends_on:
+      - RabbitMQ
   mssql:
     image: mcr.microsoft.com/mssql/server:2019-latest
     ports: 
@@ -87,6 +92,7 @@ services:
       dockerfile: ProductService/Dockerfile
     depends_on:
       - mssql
+      - RabbitMQ
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
@@ -117,6 +123,7 @@ services:
       dockerfile: BasketService/Dockerfile
     depends_on: 
       - mongoDB
+      - RabbitMQ
     restart: unless-stopped
     networks:
       - basket-net

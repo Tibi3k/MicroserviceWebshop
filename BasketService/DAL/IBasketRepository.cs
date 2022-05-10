@@ -11,5 +11,6 @@ namespace BasketService.DAL
 
         Task<long> DeleteProductFromBasketAsync(string userId, string productSubId);
         Task ClearBasket(string userId);
+        Task<int> GetBasketSize(string userId);
     }
 }

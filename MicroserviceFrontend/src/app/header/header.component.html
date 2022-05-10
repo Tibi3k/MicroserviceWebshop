@@ -6,8 +6,8 @@
 			<li routerLink="/">
 					Products
 				</li>
-			<li *ngIf="this.currentUser != null" routerLink="/basket">
-					Basket
+			<li *ngIf="this.currentUser != null" routerLink="/basket"  >
+					<span [matBadge]="this.basketCount" [matBadgeHidden]="this.basketCount == 0">Basket</span>
 				</li>
 			<li *ngIf="this.currentUser != null" routerLink="/orders">
 					Orders

@@ -4,17 +4,26 @@ import { AccountInfo,  } from '@azure/msal-browser';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { User } from '../model/user.model';
+import { BasketService } from '../services/basket.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router, private basketService: BasketService) { }
   authenticatedUserSubscription: Subscription | undefined
+  basketModifiedSubscription: Subscription | undefined
   currentUser: AccountInfo | null = null
+  basketCount = 0;
+
+  interval = setInterval(() => {
+    if(this.currentUser != null)
+      this.basketService.getBasketSize()
+        .subscribe(result => this.basketCount = result)
+  },1000)
 
    ngOnInit(): void {
     this.authenticatedUserSubscription = this.authService.getCurrentUserListener()
@@ -22,12 +31,12 @@ export class HeaderComponent implements OnInit {
         this.currentUser = user
         console.log(this.currentUser)
       })
-
   }
 
-  //  ngOnDestroy(): void {
-  //   this.authenticatedUserSubscription?.unsubscribe()
-  // }
+  ngOnDestroy(): void {
+    if(this.interval)
+      clearInterval(this.interval)
+   }
 
   onLoginClicked(){
     console.log('login')

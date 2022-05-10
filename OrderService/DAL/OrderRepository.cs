@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using OrderService.Model;
 
 namespace OrderService.DAL.DbModel;
 
@@ -19,7 +20,8 @@ public class OrderRepository : IOrderRepository
             {
                 Email = Email,
                 UserId = UserId,
-                Username = Name
+                Username = Name,
+                OrderItems = new List<DbOrderItem>()
             };
 
             await orderCollection.InsertOneAsync(order);
@@ -32,5 +34,16 @@ public class OrderRepository : IOrderRepository
             update: Builders<DbOrder>.Update.Set(b => b.OrderItems, order.OrderItems)
         );
         Console.WriteLine($"Modified {result.ModifiedCount} lines!");
+
+
     }
+
+    public async Task<Order?> GetOrdersOfUser(string userId)
+    {
+        var order = await this.orderCollection.Find(o => o.UserId == userId).SingleOrDefaultAsync();
+        if (order == null)
+            return null;
+
+        return order.toOrder();
+    }   
 }

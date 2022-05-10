@@ -1,20 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
-
-import {MatTableModule} from '@angular/material/table';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
-import {MatCardModule} from '@angular/material/card';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {MatInputModule} from '@angular/material/input';
+import {ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatSelectModule} from '@angular/material/select';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatRadioModule} from '@angular/material/radio';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -32,6 +20,8 @@ import { CreateCategoryComponent } from './create-category/create-category.compo
 import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { IPublicClientApplication,PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
 import { environment } from 'src/environments/environment';
+import { ErrorInterceptor } from './services/error.interceptor';
+import { AngularMaterialModule } from './angular-material.module';
 
 @NgModule({
   declarations: [
@@ -49,20 +39,10 @@ import { environment } from 'src/environments/environment';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    MatTableModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    //FormsModule,
     ReactiveFormsModule,
-    MatInputModule,
     BrowserAnimationsModule,
-    MatSelectModule,
-    MatCheckboxModule,
-    MatRadioModule,
-    MsalModule
+    MsalModule,
+    AngularMaterialModule
   ],
   providers: [
     BackendService,
@@ -71,6 +51,11 @@ import { environment } from 'src/environments/environment';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: MsalInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
       multi: true
     },
     {
@@ -128,7 +113,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   protectedResourceMap.set('http://localhost/api/products/protected', [environment.scopeUrl]);
   protectedResourceMap.set('http://localhost/api/categories/create', [environment.scopeUrl]);
   protectedResourceMap.set('http://localhost/api/basket/', [environment.scopeUrl]);
-  protectedResourceMap.set('http://localhost/api/order/', [environment.scopeUrl]);
+  protectedResourceMap.set('http://localhost/api/orders/', [environment.scopeUrl]);
 
   return {
     interactionType: InteractionType.Popup,

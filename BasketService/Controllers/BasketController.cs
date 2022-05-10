@@ -68,6 +68,15 @@ namespace BasketService.Controllers
             return Ok();
         }
 
+        [Authorize(Policy = "User")]
+        [HttpGet("size")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<int>> GetBasketSize() {
+            var userId = getUserIdFromClaim(User);
+            var result = await this.repository.GetBasketSize(userId);
+            return Ok(result);
+        }
+
         /// <summary>
         /// only call if user has been authorized
         /// </summary>

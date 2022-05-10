@@ -1,0 +1,22 @@
+.container{
+    width: 100%;
+    margin-top: 15px;
+}
+
+table{
+    width: 100%;
+}
+
+.no-content{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+}
+
+.content{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}

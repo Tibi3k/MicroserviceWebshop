@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { catchError, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Product, ProductCreate } from '../model/product.model';
 import { Category } from '../model/category.model';
@@ -12,6 +12,7 @@ import { Basket } from '../model/basket.model';
 })
 export class BasketService {
   API_URL: string = environment.apiUrl
+  private basketCountSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0)
 
   constructor(private http: HttpClient) {}
 
@@ -33,6 +34,14 @@ export class BasketService {
 
   deleteProductFromBasket(id: string){
     return this.http.delete<string>(this.API_URL + `api/basket/${id}`)
+  }
+
+  getBasketSize(){
+    return this.http.get<number>(this.API_URL + `api/basket/size`)
+  }
+
+  getBasketCountListener(){
+    return this.basketCountSubject
   }
 
   getHeaders(): HttpHeaders{

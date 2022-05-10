@@ -7,7 +7,8 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
         var configuration = hostContext.Configuration;
-        services.AddTransient<MailService>(context => {
+        services.AddTransient<MailService>(context =>
+        {
             var email = configuration.GetSection("Email").GetValue<string>("EmailAddress");
             var displayName = configuration.GetSection("Email").GetValue<string>("DisplayName");
             var password = configuration.GetSection("Email").GetValue<string>("Password");
@@ -26,7 +27,6 @@ IHost host = Host.CreateDefaultBuilder(args)
                 {
                     var service = context.GetRequiredService(typeof(MailService)) as MailService;
                     e.Consumer(() => new OrderSubmittedEventConsumer(service));
-                    e.RethrowFaultedMessages();
                 });
             });
         });
@@ -34,8 +34,9 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddOptions<MassTransitHostOptions>()
             .Configure(options =>
             {
+                
                 options.WaitUntilStarted = true;
-                options.StartTimeout = TimeSpan.FromSeconds(30);
+                //options.StartTimeout = TimeSpan.FromSeconds(30);
             });
     })
     .Build();

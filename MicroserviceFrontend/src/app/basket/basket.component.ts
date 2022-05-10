@@ -35,15 +35,17 @@ export class BasketComponent implements OnInit {
 
   orderBasket(){
     this.basketService.orderBasket()
-      .subscribe(result => {})
+      .subscribe(result => {this.getUserBasket()})
   }
 
   getUserBasket(){
     this.basketService.getUserBasket()
       .subscribe(basket => {
         this.basket = basket
-        this.dataSource = basket.products
-        this.myTable?.renderRows()
+        if(basket != null){
+          this.dataSource = basket.products
+          this.myTable?.renderRows()
+        }
       })
   }
 }
