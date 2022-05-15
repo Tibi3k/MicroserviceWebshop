@@ -55,13 +55,12 @@ export class AuthService implements OnInit {
    }
 
   getActiveAccount(): AccountInfo | null{
-    console.log('as gbhporubgrbhsgbnrudhiubanrgiolurhmbpioerhiglermhbg')
     return this.azureAuthService.instance.getActiveAccount()
   }
 
   tryForLogin(){
     const accounts = this.azureAuthService.instance.getAllAccounts()
-    if (accounts.length > 0) {
+    if (accounts.length > 0 && !this.isAuthTokenExpired(accounts[0])) {
       this.azureAuthService.instance.setActiveAccount(accounts[0]);
       this.currentUser.next(this.azureAuthService.instance.getActiveAccount())
     }
@@ -70,32 +69,30 @@ export class AuthService implements OnInit {
 
 
   login(){
-    const accounts = this.azureAuthService.instance.getAllAccounts()
-    if (accounts.length > 0) {
-      this.azureAuthService.instance.setActiveAccount(accounts[0]);
-      this.currentUser.next(this.azureAuthService.instance.getActiveAccount())
-    }
-    
+    this.tryForLogin()
     console.log('get active account', this.azureAuthService.instance.getActiveAccount());
 
     this.azureAuthService.instance.handleRedirectPromise().then(authResult=>{
-      // Check if user signed in 
+      console.log('auth started')
       if(authResult != null)
         this.currentUser.next(authResult?.account)
       const account = this.azureAuthService.instance.getActiveAccount();
-      if(!account){
-        // redirect anonymous user to login page 
+      if(!account || this.isAuthTokenExpired(account)){
         this.azureAuthService.instance.loginPopup()
         .then(result => {
           this.azureAuthService.instance.setActiveAccount(result.account)
           this.currentUser.next(result.account)
         })
-        .catch(error => console.log(error))
+        .catch()
       }
     }).catch(err=>{
       // TODO: Handle errors
       console.log(err);
     });
+  }
+
+  isAuthTokenExpired(account: AccountInfo){
+    return account.idTokenClaims?.exp! < Math.floor(Date.now()/1000)
   }
 
   

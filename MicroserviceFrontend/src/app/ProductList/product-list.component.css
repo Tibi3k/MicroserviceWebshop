@@ -15,3 +15,40 @@ table {
     background-color: orange;
     color: black;
 }
+
+.loading{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #fff;
+  padding: 5px;
+}
+
+.error{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  color: red;
+  padding: 5px;
+  background-color: #fff;
+}
+
+.button-mat-spinner{
+  max-width: 36px;
+  max-height: 36px;
+}
+
+.button-container{
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  align-items: flex-start;
+}
+
+.button-spinner-container{
+  display: flex;
+  justify-content: center;
+  margin-top: 5px;
+}

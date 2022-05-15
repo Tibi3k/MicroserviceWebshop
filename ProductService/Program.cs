@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Hellang.Middleware.ProblemDetails;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.WebHost.CaptureStartupErrors(true);
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -16,11 +16,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
 
+
 builder.Services.AddDbContext<ProductService.DAL.EfDbContext.ProductDbContext>(options => {
     options.UseSqlServer(connectionString, 
     sqlOptions => sqlOptions.EnableRetryOnFailure(
        maxRetryCount: 10,
-       maxRetryDelay: TimeSpan.FromSeconds(10),
+       maxRetryDelay: TimeSpan.FromSeconds(1),
        errorNumbersToAdd: null)
     );
 });
@@ -32,6 +33,8 @@ builder.Services.AddProblemDetails(options =>
     options.Map<Exception>(
         (ctx, ex) =>
         {
+            Console.WriteLine("ex:" + ex.ToString());
+            global::System.Console.WriteLine("type:" + ex.GetType());
             var pd = StatusCodeProblemDetails.Create(StatusCodes.Status500InternalServerError);
             pd.Title = "Something went wrong, please try again later!";
             return pd;
@@ -55,8 +58,7 @@ builder.Services.AddMassTransit(options => {
 builder.Services.AddOptions<MassTransitHostOptions>()
     .Configure(options =>
     {
-        options.WaitUntilStarted = true;
-        options.StartTimeout = TimeSpan.FromSeconds(30);
+        //options.WaitUntilStarted = true;
     });
 
 builder.Services.AddCors(o => o.AddPolicy("default", builder =>
@@ -82,12 +84,12 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
-using (var serviceScope = app.Services.CreateScope())
-{
-    var context = serviceScope.ServiceProvider.GetRequiredService<ProductService.DAL.EfDbContext.ProductDbContext>();
-    context.Database.EnsureCreated();
-}
-app.UseProblemDetails();
+//using (var serviceScope = app.Services.CreateScope())
+//{
+//    var context = serviceScope.ServiceProvider.GetRequiredService<ProductService.DAL.EfDbContext.ProductDbContext>();
+//    //context.Database.EnsureCreated();
+//}
+//app.UseProblemDetails();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

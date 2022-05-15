@@ -58,7 +58,7 @@ services:
       - traefik-net
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nginx.rule=Host(`localhost`)"
+      - "traefik.http.routers.nginx.rule=Host(`localhost`) && Path(`/`, `/{jscss:.*(.css|.js)}`)"
       - "traefik.http.routers.nginx.entrypoints=web"
       - "traefik.port=80"
       - "traefik.http.middlewares.nginxheaders.headers.accesscontrolalloworiginlist=http://localhost:80" 

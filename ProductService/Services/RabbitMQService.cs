@@ -14,16 +14,25 @@ namespace ProductService.Services
             this._sendEndpointProvider = sendEndpointProvider;
         }
 
-        public async Task AddProductToBasket(Product product, string userId, string email) {
+        public async Task<bool> AddProductToBasket(Product product, string userId, string email) {
             var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:ProductToBasketQueue3"));
             Console.WriteLine("sending product:" + product);
-            await endpoint.Send<IProductWithUserId>(new
+            try
             {
-                Product = product,
-                UserId = userId,
-                Email = email,
-                AddTime = DateTime.Now
-            });
+                await endpoint.Send<IProductWithUserId>(new
+                {
+                    Product = product,
+                    UserId = userId,
+                    Email = email,
+                    AddTime = DateTime.Now
+                }).WaitAsync(TimeSpan.FromSeconds(5));
+                return true;
+            }
+            catch (Exception ex) {
+                //Timeout
+                return false;
+            }
+
         }
     }
 }

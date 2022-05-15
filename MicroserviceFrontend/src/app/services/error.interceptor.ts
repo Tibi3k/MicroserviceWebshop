@@ -9,11 +9,16 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(httpRequest)
         .pipe(
             catchError((error: HttpErrorResponse) => {
-                let errorMsg = '';
-                if(error.error instanceof ErrorEvent)
-                    errorMsg = `Error: ${error.error.message}!`;
-                if(error.status == 500)
-                    errorMsg = 'Something went wrong!'
+                console.log('error', error)
+                
+                let errorMsg = 'Something went wrong, please try again later'
+                if(error.error instanceof ErrorEvent){
+                    let errorMsg = 'Error: service is currently unavailable!';
+                    return throwError(() => errorMsg)
+                } else {
+                    console.log(error)
+                    errorMsg = 'Something went wrong, please try again later'
+                }
                 return throwError(() => errorMsg)
             })
         )

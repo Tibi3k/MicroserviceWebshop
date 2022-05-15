@@ -55,8 +55,14 @@
         <button mat-raised-button color="primary" (click)="orderBasket()">Order</button>
     </div>
   </div>
-  <div class="no-content" *ngIf="this.basket == null || this.basket?.products?.length == 0">
+  <div class="no-content" *ngIf="this.basket == null || this.basket?.products?.length == 0 && this.loadState == state.success">
     <div>
         <h3>Your basket is empty</h3>
     </div>
+  </div>
+  <div class="loading" *ngIf="this.loadState === state.loading">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div class="error" *ngIf="this.loadState === state.error">
+    {{errorMsg}}
   </div>

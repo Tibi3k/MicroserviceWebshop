@@ -47,6 +47,7 @@ import { AngularMaterialModule } from './angular-material.module';
   providers: [
     BackendService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthorizationInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     AuthGuard,
     {
       provide: HTTP_INTERCEPTORS,

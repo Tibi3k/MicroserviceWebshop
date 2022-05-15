@@ -18,24 +18,26 @@ export class HeaderComponent implements OnInit, OnDestroy {
   basketModifiedSubscription: Subscription | undefined
   currentUser: AccountInfo | null = null
   basketCount = 0;
+  date = Date.now()
 
-  interval = setInterval(() => {
-    if(this.currentUser != null)
-      this.basketService.getBasketSize()
-        .subscribe(result => this.basketCount = result)
-  },1000)
+  // interval = setInterval(() => {
+  //   if(this.currentUser != null)
+  //     this.basketService.getBasketSize()
+  //       .subscribe(result => this.basketCount = result)
+  // },1000)
 
    ngOnInit(): void {
     this.authenticatedUserSubscription = this.authService.getCurrentUserListener()
       .subscribe(user => {
+        console.log("header user:",user)
         this.currentUser = user
         console.log(this.currentUser)
       })
   }
 
   ngOnDestroy(): void {
-    if(this.interval)
-      clearInterval(this.interval)
+    // if(this.interval)
+    //   clearInterval(this.interval)
    }
 
   onLoginClicked(){

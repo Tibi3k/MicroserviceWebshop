@@ -78,4 +78,24 @@
     transform: translateX(4px) !important
 }
 
+.loading{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #fff;
+  padding: 5px;
+}
+
+.error{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  color: red;
+  padding: 5px;
+  background-color: #fff;
+}
+
+
   

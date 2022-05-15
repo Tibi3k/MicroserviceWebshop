@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { RequestState } from '../model/request-state.model';
 import { BackendService } from '../services/backend.service';
 
 @Component({
@@ -16,6 +17,9 @@ export class CreateCategoryComponent implements OnInit {
   ) { }
 
   form!: FormGroup
+  errorMsg = "Somthing went wrong!"
+  state = RequestState
+  loadState = RequestState.success
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -27,10 +31,18 @@ export class CreateCategoryComponent implements OnInit {
 
   onAddCategory(){
     if(this.form.valid){
+      this.loadState = this.state.loading
       this.backendService.AddCategory(this.form.value.name)
-       .subscribe(res => {
-          this.router.navigate([''])
-       })
+       .subscribe({
+         next: res => {
+           this.loadState = this.state.success
+           this.router.navigate([''])
+         },
+         error: error => {
+           this.loadState = this.state.error
+           this.errorMsg = error
+         }
+      })
     }
   }
 

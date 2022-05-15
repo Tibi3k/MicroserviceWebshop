@@ -5,7 +5,8 @@ namespace ProductService.DAL.EfDbContext {
     public class ProductDbContext : DbContext {
         public ProductDbContext(DbContextOptions<ProductDbContext> options)
             : base(options) {
-
+            Database.EnsureCreated();
+            Database.SetCommandTimeout(5);
         }
 
         public DbSet<DbProduct> Products { get; set; }

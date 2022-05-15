@@ -100,8 +100,10 @@ namespace ProductService.Controllers
             if (product.Quantity < amount)
                 return BadRequest("Not enough products");
             product.Quantity = amount.Value;
-            await this.rabbitmq.AddProductToBasket(product, userID.ToString(), email);
-            return Accepted();
+            var result = await this.rabbitmq.AddProductToBasket(product, userID.ToString(), email);
+            if(result)
+                return Accepted();
+            return Problem("Something went wrong!");
 
         }
         private string getUserIdFromClaim(ClaimsPrincipal principal)
