@@ -36,7 +36,6 @@ builder.Services.AddMassTransit(options => {
         {
             var service = context.GetRequiredService(typeof(IOrderRepository)) as IOrderRepository;
             e.Consumer(() => new OrderSubmittedEventConsumer(service));
-            e.RethrowFaultedMessages();
         });
     });
 });

@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTable } from '@angular/material/table';
 import { BehaviorSubject } from 'rxjs';
-import { BasketProduct } from '../model/basket-product';
-import { Basket } from '../model/basket.model';
-import { Product } from '../model/product.model';
-import { RequestState } from '../model/request-state.model';
-import { BasketService } from '../services/basket.service';
+import { BasketProduct } from '../../model/basket-product';
+import { Basket } from '../../model/basket.model';
+import { Product } from '../../model/product.model';
+import { RequestState } from '../../model/request-state.model';
+import { BasketService } from '../../services/basket.service';
 
 @Component({
   selector: 'app-basket',

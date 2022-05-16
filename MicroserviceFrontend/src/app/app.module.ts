@@ -7,20 +7,18 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { BackendService } from './services/backend.service';
-import { ProductListComponent } from './ProductList/product-list.component';
-import { AuthorizationInterceptor } from './services/token.interceptor';
-import { HeaderComponent } from './header/header.component';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { BasketComponent } from './basket/basket.component';
-import { OrderComponent } from './order/order.component';
-import { CreateProductComponent } from './create-product/create-product.component';
-import { AuthGuard } from './services/auth.guard';
-import { CreateCategoryComponent } from './create-category/create-category.component';
+import { ProductListComponent } from './components/ProductList/product-list.component';
+import { AuthorizationInterceptor } from './services/providers/token.interceptor';
+import { HeaderComponent } from './components/common/header/header.component';
+import { BasketComponent } from './components/basket/basket.component';
+import { OrderComponent } from './components/order/order.component';
+import { CreateProductComponent } from './components/create-product/create-product.component';
+import { AuthGuard } from './services/providers/auth.guard';
+import { CreateCategoryComponent } from './components/create-category/create-category.component';
 import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptor, MsalInterceptorConfiguration, MsalModule, MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { IPublicClientApplication,PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
 import { environment } from 'src/environments/environment';
-import { ErrorInterceptor } from './services/error.interceptor';
+import { ErrorInterceptor } from './services/providers/error.interceptor';
 import { AngularMaterialModule } from './angular-material.module';
 
 @NgModule({
@@ -28,8 +26,6 @@ import { AngularMaterialModule } from './angular-material.module';
     AppComponent,
     ProductListComponent,
     HeaderComponent,
-    LoginComponent,
-    RegisterComponent,
     BasketComponent,
     OrderComponent,
     CreateProductComponent,

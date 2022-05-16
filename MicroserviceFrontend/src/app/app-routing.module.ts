@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { BasketComponent } from './basket/basket.component';
-import { CreateCategoryComponent } from './create-category/create-category.component';
-import { CreateProductComponent } from './create-product/create-product.component';
+import { BasketComponent } from './components/basket/basket.component';
+import { CreateCategoryComponent } from './components/create-category/create-category.component';
+import { CreateProductComponent } from './components/create-product/create-product.component';
 import { LoginComponent } from './login/login.component';
-import { OrderComponent } from './order/order.component';
-import { ProductListComponent } from './ProductList/product-list.component';
+import { OrderComponent } from './components/order/order.component';
+import { ProductListComponent } from './components/ProductList/product-list.component';
 import { RegisterComponent } from './register/register.component';
-import { AuthGuard } from './services/auth.guard';
+import { AuthGuard } from './services/providers/auth.guard';
 
 const routes: Routes = [
   { path: '', component: ProductListComponent },

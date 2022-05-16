@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit,ViewChild } from '@angular/core';
-import { BackendService } from '../services/backend.service';
+import { BackendService } from '../../services/backend.service';
 import { MatTableDataSource,MatTable } from '@angular/material/table';
 import { BehaviorSubject, Subscriber, Subscription } from 'rxjs';
-import { AuthService } from '../services/auth.service';
-import { User } from '../model/user.model';
-import { Product } from '../model/product.model';
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../model/user.model';
+import { Product } from '../../model/product.model';
 import { Router } from '@angular/router';
 import {AccountInfo} from '@azure/msal-browser'
-import { RequestState } from '../model/request-state.model';
-import { ErrorObject } from '../model/errors.model';
+import { RequestState } from '../../model/request-state.model';
+import { ErrorObject } from '../../model/errors.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({

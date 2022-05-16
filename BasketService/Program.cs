@@ -58,12 +58,6 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAdB2C"));
 
-builder.Services.AddOptions<MassTransitHostOptions>()
-    .Configure(options =>
-    {
-        options.WaitUntilStarted = true;
-    });
-
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

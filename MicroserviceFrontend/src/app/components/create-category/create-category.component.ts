@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { RequestState } from '../model/request-state.model';
-import { BackendService } from '../services/backend.service';
+import { RequestState } from '../../model/request-state.model';
+import { BackendService } from '../../services/backend.service';
 
 @Component({
   selector: 'app-create-category',

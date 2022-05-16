@@ -2,9 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountInfo,  } from '@azure/msal-browser';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../services/auth.service';
-import { User } from '../model/user.model';
-import { BasketService } from '../services/basket.service';
+import { AuthService } from '../../../services/auth.service';
+import { User } from '../../../model/user.model';
+import { BasketService } from '../../../services/basket.service';
 
 @Component({
   selector: 'app-header',

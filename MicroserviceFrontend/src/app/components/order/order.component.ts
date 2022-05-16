@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTable } from '@angular/material/table';
-import { Order } from '../model/order.model';
-import { OrderService } from '../services/order.service';
+import { Order } from '../../model/order.model';
+import { OrderService } from '../../services/order.service';
 
 @Component({
   selector: 'app-order',

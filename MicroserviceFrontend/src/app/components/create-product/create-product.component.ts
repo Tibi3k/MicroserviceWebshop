@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Product, ProductCreate } from '../model/product.model';
-import { AuthService } from '../services/auth.service';
-import { BackendService } from '../services/backend.service';
+import { Product, ProductCreate } from '../../model/product.model';
+import { AuthService } from '../../services/auth.service';
+import { BackendService } from '../../services/backend.service';
 
 @Component({
   selector: 'app-create-product',
