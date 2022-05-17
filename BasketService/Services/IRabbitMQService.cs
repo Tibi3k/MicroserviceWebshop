@@ -4,8 +4,8 @@ namespace BasketService.Services
 {
     public interface IRabbitMQService
     {
-        public Task ConvertBasketToOrderAsync(UserBasket basket, string name);
-        public Task SendOrderConfirmationEmailAsync(UserBasket basket, string name);
-        public Task ReturnAvailableAmountToProduct(int productId, int quantity);
+        public Task<bool> ConvertBasketToOrderAsync(UserBasket basket, string name);
+        public Task<bool> SendOrderConfirmationEmailAsync(UserBasket basket, string name);
+        public Task<bool> ReturnAvailableAmountToProduct(int productId, int quantity);
     }
 }

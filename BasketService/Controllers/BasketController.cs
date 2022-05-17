@@ -46,11 +46,14 @@ namespace BasketService.Controllers
             var userID = getUserIdFromClaim(User);
             var product = await repository.FindQuantityByBasketSubId(productSubId, userID);
             Console.WriteLine("returning product" + product?.Quantity ?? "null");
+            bool result = false;
             if (product != null)
-                await rabbitMQ.ReturnAvailableAmountToProduct(product.Id, product.Quantity);
-            var modifiedLines = await repository.DeleteProductFromBasketAsync(userID, productSubId);
-            if (modifiedLines > 0)
-                return Ok($"Modified {modifiedLines} lines");
+                result = await rabbitMQ.ReturnAvailableAmountToProduct(product.Id, product.Quantity);
+            if (result)
+            {
+                await repository.DeleteProductFromBasketAsync(userID, productSubId);
+                return Ok();
+            }
             return NoContent();
         }
 
@@ -66,10 +69,13 @@ namespace BasketService.Controllers
             var basket = await repository.FindBasketByUserIdAsync(userID);
             if (basket == null)
                 return NotFound("No user or basket");
-            await this.rabbitMQ.ConvertBasketToOrderAsync(basket, name + surname);
-            await this.rabbitMQ.SendOrderConfirmationEmailAsync(basket, name + " "+ surname);
-            await repository.ClearBasket(userID);
-            return Ok();
+            var result1 = await this.rabbitMQ.ConvertBasketToOrderAsync(basket, name + surname);
+            var result2 = await this.rabbitMQ.SendOrderConfirmationEmailAsync(basket, name + " "+ surname);
+            if (result1 && result2) {
+                await repository.ClearBasket(userID);
+                return Ok();
+            }
+            return Problem();
         }
 
         [Authorize(Policy = "User")]

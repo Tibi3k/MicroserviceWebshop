@@ -42,7 +42,7 @@ export class BasketComponent implements OnInit {
       .subscribe({
         next:(result) => {
           this.removeItemFromList(this.loadingMap, product.id)
-          this.basketService.getUserBasket()
+          this.getUserBasket()
         },
         error: (error) => {
           this.removeItemFromList(this.loadingMap, product.id)
@@ -73,6 +73,7 @@ export class BasketComponent implements OnInit {
         next:(basket) => {
           this.basket = basket
           if(basket != null){
+            this.dataSource = []
             this.dataSource = basket.products
           } else {
             this.dataSource = []

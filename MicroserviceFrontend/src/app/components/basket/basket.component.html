@@ -60,7 +60,7 @@
         <button mat-raised-button color="primary" (click)="orderBasket()">Order</button>
         <mat-spinner [diameter]="36" *ngIf="this.orderLoading"></mat-spinner>
       </div>
-      <div class="error">
+      <div class="error" *ngIf="this.orderError">
         Service unavailable!
       </div>
     </div>

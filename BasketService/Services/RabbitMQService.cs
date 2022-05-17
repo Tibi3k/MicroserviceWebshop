@@ -46,42 +46,65 @@ namespace BasketService.Services
 
         }
 
-        public async Task ConvertBasketToOrderAsync(UserBasket basket, string name) {
+        public async Task<bool> ConvertBasketToOrderAsync(UserBasket basket, string name) {
             var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:BasketToOrderQueue"));
             Console.WriteLine("sending basket:" + basket.ToString());
-            await endpoint.Send<IBasketTransfer>(new
+            try
             {
-                Email = basket.Email,
-                OrderId = basket.Id,
-                Products = basket.Products,
-                Name = name,
-                UserId = basket.UserId,
-                TotalCost = basket.TotalCost,
-                OrderTime = DateTime.Now
-            });
+                await endpoint.Send<IBasketTransfer>(new
+                {
+                    Email = basket.Email,
+                    OrderId = basket.Id,
+                    Products = basket.Products,
+                    Name = name,
+                    UserId = basket.UserId,
+                    TotalCost = basket.TotalCost,
+                    OrderTime = DateTime.Now
+                }).WaitAsync(TimeSpan.FromSeconds(10));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
         }
 
-        public async Task SendOrderConfirmationEmailAsync(UserBasket basket, string name)
+        public async Task<bool> SendOrderConfirmationEmailAsync(UserBasket basket, string name)
         {
-            var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:OrderConfirmationEmailQueue"));
-            Console.WriteLine("sending basket:" + basket.Products.ToList()[0].ToString() + ", " + basket.Id );
-            await endpoint.Send<IBasketTransfer>(new
+            try { 
+                var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:OrderConfirmationEmailQueue"));
+                Console.WriteLine("sending basket:" + basket.Products.ToList()[0].ToString() + ", " + basket.Id );
+                await endpoint.Send<IBasketTransfer>(new
+                {
+                    Email = basket.Email,
+                    OrderId = basket.Id,
+                    Products = basket.Products,
+                    Name = name
+                });
+                return true;
+            }
+            catch (Exception ex)
             {
-                Email = basket.Email,
-                OrderId = basket.Id,
-                Products = basket.Products,
-                Name = name
-            });
+                return false;
+            }
         }
 
-        public async Task ReturnAvailableAmountToProduct(int productId, int quantity)
+        public async Task<bool> ReturnAvailableAmountToProduct(int productId, int quantity)
         {
-            var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:ProductQuantityReturnQueue"));
-            await endpoint.Send<IQuantityTransfer>(new
+            try { 
+                var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:ProductQuantityReturnQueue"));
+                await endpoint.Send<IQuantityTransfer>(new
+                {
+                    productId = productId,
+                    quantity = quantity
+                });
+                return true;
+            }
+            catch (Exception ex)
             {
-                productId = productId,
-                quantity = quantity
-            });
+                return false;
+            }
         }
 
     }

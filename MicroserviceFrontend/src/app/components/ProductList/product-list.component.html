@@ -1,4 +1,5 @@
 <button 
+  *ngIf="this.isUserAdmin"
   mat-raised-button 
   color="warn" 
   routerLink="/createproduct">
@@ -6,6 +7,7 @@
 </button>
 
 <button 
+  *ngIf="this.isUserAdmin"
   mat-raised-button 
   color="primary" 
   routerLink="createcategory">
@@ -13,7 +15,7 @@
 </button>
 <!-- *ngIf="this.currentUser != null"  -->
 
-<table #myTable mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<table #myTable mat-table [dataSource]="dataSource" class="mat-elevation-z8, maintable">
 
     <ng-container matColumnDef="#">
       <th mat-header-cell *matHeaderCellDef> # </th>

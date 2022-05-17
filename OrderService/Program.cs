@@ -31,6 +31,13 @@ builder.Services.AddMassTransit(options => {
             h.Password("guest");
             h.Username("guest");
         });
+        cfg.UseDelayedRedelivery(r => r.Intervals(
+            TimeSpan.FromMinutes(1),
+            TimeSpan.FromMinutes(2),
+            TimeSpan.FromMinutes(3),
+            TimeSpan.FromMinutes(10),
+            TimeSpan.FromMinutes(20)
+            ));
 
         cfg.ReceiveEndpoint("BasketToOrderQueue", e =>
         {
