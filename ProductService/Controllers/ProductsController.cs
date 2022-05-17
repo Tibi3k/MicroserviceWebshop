@@ -25,62 +25,73 @@ namespace ProductService.Controllers
         [AllowAnonymous]
         [HttpGet("public")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<Product>> GetAllProducts() {
-            return Ok(this.repository.List());
+        public async Task<ActionResult<List<Product>>> GetAllProducts() {
+                var result = await this.repository.List().WaitAsync(TimeSpan.FromSeconds(5));
+                return Ok(result.ToList());
         }
 
         [AllowAnonymous]
         [HttpGet("public/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Product> FindById(int id)
+        public async Task<ActionResult<Product>> FindById(int id)
         {
-            var product = this.repository.FindById(id);
-            if (product == null)
-                return NotFound();
-            return Ok(product);
+            try
+            {
+                var product = await this.repository.FindById(id);
+                if (product == null)
+                    return NotFound();
+                return Ok(product);
+            }
+            catch (Exception ex) {
+                return Problem();
+            }
+
         }
 
         [Authorize(Policy = "Admin")]
         [HttpPost("protected")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Product> addProduct([FromBody] CreateProduct createProduct)
+        public async Task<ActionResult<Product>> addProduct([FromBody] CreateProduct createProduct)
         {
-            try
-            {
-                var product = this.repository.AddNewProduct(createProduct);
+                var product = await this.repository.AddNewProduct(createProduct);
                 return CreatedAtAction(nameof(FindById), new { id = product.Id }, product);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                return BadRequest(ex.Message);
-            }
         }
 
         [Authorize(Policy = "Admin")]
         [HttpDelete("protected/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Product> DeleteProduct(int id) {
-            var result = this.repository.DeleteProduct(id);
-            if (result == null)
-                return NotFound();
-            return NoContent();
+        public async Task<ActionResult<Product>> DeleteProduct(int id) {
+            try {
+                var result = await this.repository.DeleteProduct(id);
+                if (result == null)
+                    return NotFound();
+                return NoContent();
+            }
+            catch (Exception ex) {
+                return Problem();
+            }
         }
 
         [Authorize(Policy = "Admin")]
         [HttpPut("protected")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Product> UpdateProduct(Product product)
+        public async Task<ActionResult<Product>> UpdateProduct(Product product)
         {
-            var result = this.repository.UpdateProduct(product);
-            if (result == null)
-                return BadRequest();
-            return Ok();
+            try
+            {
+                var result = await this.repository.UpdateProduct(product);
+                if (result == null)
+                    return BadRequest();
+                return Ok();
+            }
+            catch (Exception ex) {
+                return Problem();
+            }
+
         }
 
         [Authorize(Policy = "User")]
@@ -91,18 +102,25 @@ namespace ProductService.Controllers
             var userID = getUserIdFromClaim(User);
             if (amount == null)
                 return BadRequest("Amount not specified");
-            Console.WriteLine("Product id:" + productID);
             var email = User.Claims.First(claim => claim.Type == "emails").Value;
-            Console.WriteLine("email: " + email);
-            var product = this.repository.FindById(productID);
+            Product? product;
+            try{
+                product = await this.repository.FindById(productID).WaitAsync(TimeSpan.FromSeconds(5));
+            }
+            catch (Exception ex) {
+                return Problem();
+            }
             if (product == null)
                 return BadRequest("Invalid productID");
             if (product.Quantity < amount)
                 return BadRequest("Not enough products");
             product.Quantity = amount.Value;
             var result = await this.rabbitmq.AddProductToBasket(product, userID.ToString(), email);
-            if(result)
-                return Accepted();
+            if (result)
+            {
+                await this.repository.RemoveProductQuantity(productID, amount.Value);
+                return Ok();
+            }
             return Problem("Something went wrong!");
 
         }
@@ -113,6 +131,6 @@ namespace ProductService.Controllers
                  claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")!
                 .Value;
         }
-
     }
+
 }

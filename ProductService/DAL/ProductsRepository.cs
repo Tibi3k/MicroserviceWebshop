@@ -13,41 +13,48 @@ namespace ProductService.DAL {
             this.db = db;
         } 
 
-        public IReadOnlyCollection<Product> List()
+        public async Task<IReadOnlyCollection<Product>> List()
         {
-            return db.Products.Include(p => p.Category).Select(ToModel).ToList();
+            var result = await db.Products.Include(p => p.Category).ToListAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            return result.Select(ToModel).ToList();
         }
 
-        public Product? FindById(int id) { 
-            var dbProduct = db.Products
+        public async Task<Product?> FindById(int id) { 
+            var dbProduct = await db.Products
                 .Where(p => p.Id == id)
                 .Include(p => p.Category)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
             if (dbProduct == null)
                 return null;
             return ToModel(dbProduct);
         }
+        public async Task RemoveProductQuantity(int id, int quantity) {
+            var dbProduct = await db.Products
+                .Where(p => p.Id == id)
+                .SingleOrDefaultAsync();
+            dbProduct.Quantity -= quantity;
+            await db.SaveChangesAsync();
+        }
 
-        public Product AddNewProduct(CreateProduct newProduct)
+        public async Task<Product> AddNewProduct(CreateProduct newProduct)
         {
-            var strategy = db.Database.CreateExecutionStrategy();
-            //using (var tran = db.Database.BeginTransaction(System.Data.IsolationLevel.RepeatableRead)) {
-
+            using (var tran = db.Database.BeginTransaction(System.Data.IsolationLevel.RepeatableRead))
+            {
                 //Check if product exists
-                var existingProduct = db.Products
+                var existingProduct = await db.Products
                     .Where(p => p.Name == newProduct.Name)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
                 if (existingProduct != null)
                     throw new ArgumentException("Product already exists");
 
                 //Create category if it does not exists
-                var existingCategory = db.Categories
+                var existingCategory = await db.Categories
                     .Where(c => c.Name == newProduct.Category)
-                    .SingleOrDefault();
-                if (existingCategory == null) {
+                    .SingleOrDefaultAsync();
+                if (existingCategory == null)
+                {
                     var newCategory = new DbCategory() { Name = newProduct.Category };
-                    db.Categories.Add(newCategory);
-                    db.SaveChanges();
+                    await db.Categories.AddAsync(newCategory);
                     existingCategory = newCategory;
                 }
 
@@ -61,85 +68,97 @@ namespace ProductService.DAL {
                     Description = newProduct.Description,
                 };
                 db.Products.Add(toInsert);
-            strategy.ExecuteInTransaction(
-                db,
-                operation: context => { context.SaveChanges(acceptAllChangesOnSuccess: false); },
-                verifySucceeded: context => context.Products.AsNoTracking().Any(p => p.Id == toInsert.Id)
-             );
-            db.ChangeTracker.AcceptAllChanges();
-            Console.WriteLine("transaction compoleted");
-                //db.SaveChanges();
-                //tran.Commit();
+                await db.SaveChangesAsync();
+                await tran.CommitAsync();
                 return ToModel(toInsert);
-            //}
+            }
         }
 
-        public Product? DeleteProduct(int id) {
-            var product = db.Products
+        public async Task<Product?> DeleteProduct(int id) {
+            var product = await db.Products
                 .Where(p => p.Id == id)
                 .Include(p => p.Category)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
 
             if (product == null)
                 return null;
 
             db.Products.Remove(product);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             return ToModel(product);
         }
 
 
-        public Product? UpdateProduct(Product product) {
-            var dbProduct = db.Products
+        public async Task<Product?> UpdateProduct(Product product) {
+            using (var tran = db.Database.BeginTransaction(System.Data.IsolationLevel.RepeatableRead))
+            {
+                var dbProduct = await db.Products
                 .Where(p => p.Id == product.Id)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
 
-            var category = db.Categories
-                .Where(c => c.Name == product.Category)
-                .SingleOrDefault();
+                var category = await db.Categories
+                    .Where(c => c.Name == product.Category)
+                    .SingleOrDefaultAsync();
 
-            if (dbProduct == null || category == null) {
-                return null;
+                if (dbProduct == null || category == null)
+                {
+                    return null;
+                }
+
+                dbProduct.Price = product.Price;
+                dbProduct.Name = product.Name;
+                dbProduct.Quantity = product.Quantity;
+                dbProduct.Description = product.Description;
+                dbProduct.Category = category;
+                await db.SaveChangesAsync();
+                await tran.CommitAsync();
+                return ToModel(dbProduct);
             }
-
-            dbProduct.Price = product.Price;
-            dbProduct.Name = product.Name;
-            dbProduct.Quantity = product.Quantity;
-            dbProduct.Description = product.Description;
-            dbProduct.Category = category;
-            db.SaveChanges();
-            return ToModel(dbProduct);
         }
 
-        public IEnumerable<Category> ListCategories() {
-            return this.db.Categories
+        public async Task<IEnumerable<Category>> ListCategories() {
+            return await this.db.Categories
                 .Select(prod => new Category { 
                     Id = prod.Id,
                     Name = prod.Name
                 })
-                .ToList(); 
+                .ToListAsync(); 
         }
 
-        public Category AddCategory(string categoryName) {
-            var alreadyExists = db.Categories.SingleOrDefault(c => c.Name == categoryName);
-            if (alreadyExists != null) {
+        public async Task AddQuantityToProduct(int productId, int quantity) {
+            var dbProduct = await db.Products
+                .Where(p => p.Id == productId)
+                .SingleOrDefaultAsync();
+            dbProduct.Quantity += quantity;
+            await db.SaveChangesAsync();
+        }
+
+        public async Task<Category> AddCategory(string categoryName) {
+            using (var tran = db.Database.BeginTransaction(System.Data.IsolationLevel.RepeatableRead))
+            {
+                var alreadyExists = await db.Categories.SingleOrDefaultAsync(c => c.Name == categoryName);
+                if (alreadyExists != null)
+                {
+                    return new Category
+                    {
+                        Id = alreadyExists.Id,
+                        Name = alreadyExists.Name
+                    };
+                }
+
+                var dbCategory = new DbCategory
+                {
+                    Name = categoryName
+                };
+                await db.Categories.AddAsync(dbCategory);
+                await db.SaveChangesAsync();
+                await tran.CommitAsync();
                 return new Category
                 {
-                    Id = alreadyExists.Id,
-                    Name = alreadyExists.Name
+                    Id = dbCategory.Id,
+                    Name = dbCategory.Name
                 };
             }
-
-            var dbCategory = new DbCategory {
-                Name = categoryName
-            };
-            db.Categories.Add(dbCategory);
-            db.SaveChanges();
-            return new Category
-            {
-                Id = dbCategory.Id,
-                Name = dbCategory.Name
-            };
         }
 
         private static Model.Product ToModel(DbProduct value)

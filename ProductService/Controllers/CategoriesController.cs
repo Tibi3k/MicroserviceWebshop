@@ -20,17 +20,18 @@ namespace ProductService.Controllers
         [AllowAnonymous]
         [HttpGet("get")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<Category>> GetAllCategories()
+        public async Task<ActionResult<IEnumerable<Category>>> GetAllCategories()
         {
-            return Ok(this.repository.ListCategories());
+            var res = await this.repository.ListCategories();
+            return Ok(res);
         }
 
         [Authorize(Policy = "Admin")]
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<Category> CreateCategory([FromBody] string name) {
+        public async Task<ActionResult<Category>> CreateCategory([FromBody] string name) {
             Console.WriteLine("name:" + HttpContext?.User?.Identity?.Name);
-            var result = this.repository.AddCategory(name);
+            var result = await this.repository.AddCategory(name);
             return Ok(result);
         }
     }

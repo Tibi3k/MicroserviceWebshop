@@ -20,7 +20,6 @@ export class ProductListComponent implements OnInit {
   displayedColumns: string[] = ['#', 'name', 'price', 'description', 'quantity', 'category', 'actions'];
   dataSource: Array<Product> = [];
   currentUser: AccountInfo | null = null
-  @ViewChild(MatTable) myTable: MatTable<any> | undefined;
   userSubscription!: BehaviorSubject<AccountInfo | null>
 
   state = RequestState
@@ -31,7 +30,7 @@ export class ProductListComponent implements OnInit {
   errorMap: Array<Number> = []
   deleteLoadingMap: Array<Number> = []
   deleteErrorMap: Array<Number> = []
-
+  values: Array<number> = []
   constructor(
     private backendService: BackendService, 
     private authService: AuthService,
@@ -52,6 +51,7 @@ export class ProductListComponent implements OnInit {
     this.loadState = this.state.loading
      this.backendService.getAllProducts().subscribe({
        next: (products) => { 
+         this.values = new Array<number>(products.length).fill(1)
          this.loadState = this.state.success
          this.dataSource = products
         },
@@ -63,22 +63,25 @@ export class ProductListComponent implements OnInit {
       })
   }
 
-  addToCart(product: Product){
-    this.loadingMap.push(product.id)
-    this.removeItemFromList(this.errorMap, product.id)
-    this.backendService.AddProductToBakset(1, product.id)
-      .subscribe({
-        next: result => {
-        console.log('added: ' + product.id)
-        this.removeItemFromList(this.loadingMap, product.id)
-        },
-        error: (error: string )=> {
-          console.log('plc:', error)
-          this.errorMsg = error
+  addToCart(product: Product, i: number){
+    if(this.checkIfQuantityExists(product.id, this.values[i])){
+      this.loadingMap.push(product.id)
+      this.removeItemFromList(this.errorMap, product.id)
+      this.backendService.AddProductToBakset(this.values[i], product.id)
+        .subscribe({
+          next: result => {
+          console.log('added: ' + product.id)
           this.removeItemFromList(this.loadingMap, product.id)
-          this.errorMap.push(product.id)
-        }
-      })
+          this.getAvailableProducts()
+          },
+          error: (error: string )=> {
+            console.log('plc:', error)
+            this.errorMsg = error
+            this.removeItemFromList(this.loadingMap, product.id)
+            this.errorMap.push(product.id)
+          }
+        })
+    }
   }
 
   deleteProduct(product: Product){
@@ -102,6 +105,17 @@ export class ProductListComponent implements OnInit {
     let index = list.indexOf(id)
     if(index > -1)
       list.splice(index, 1)
+  }
+
+  checkIfQuantityExists(id: Number, quantity: number){
+    let result = this.dataSource.find(prod => prod.id == id)
+    if(result == undefined)
+      return false
+    if(result.quantity > quantity)
+      return true
+    this.removeItemFromList(this.errorMap, id)
+    this.errorMap.push(id)
+    return false
   }
 
 }

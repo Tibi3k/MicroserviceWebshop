@@ -3,12 +3,14 @@ using ProductService.Model;
 
 namespace ProductService.DAL {
     public interface IProductsRepository {
-        public IReadOnlyCollection<Product> List();
-        public Product AddNewProduct(CreateProduct newProduct);
-        public Product? DeleteProduct(int id);
-        public Product? FindById(int id);
-        public Product? UpdateProduct(Product product);
-        public Category AddCategory(string categoryName);
-        public IEnumerable<Category> ListCategories();
+        public Task<IReadOnlyCollection<Product>> List();
+        public Task<Product> AddNewProduct(CreateProduct newProduct);
+        public Task<Product?> DeleteProduct(int id);
+        public Task<Product?> FindById(int id);
+        public Task<Product?> UpdateProduct(Product product);
+        public Task<Category> AddCategory(string categoryName);
+        public Task<IEnumerable<Category>> ListCategories();
+        public Task RemoveProductQuantity(int id, int quantity);
+        public Task AddQuantityToProduct(int productId, int quantity);
     }
 }

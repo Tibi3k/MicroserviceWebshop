@@ -34,7 +34,7 @@ services:
       dockerfile: OrderService/Dockerfile
     restart: unless-stopped
     networks:
-      - products-net
+      #- products-net
       - rabbitMQnet
       - traefik-net
       - basket-net
@@ -53,12 +53,12 @@ services:
       dockerfile: MicroserviceFrontend/Dockerfile
     restart: unless-stopped
     networks: 
-      - products-net
-      - rabbitMQnet
+      #- products-net
+      #- rabbitMQnet
       - traefik-net
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nginx.rule=Host(`localhost`) && Path(`/`, `/{jscss:.*(.css|.js)}`)"
+      - "traefik.http.routers.nginx.rule=Host(`localhost`) && Path(`/`, `/{jscss:.*(.css|.js)}`, `/basket`, `/orders`, `/createproduct`, `/createcategory`, `/edit{edit:.*}`)"
       - "traefik.http.routers.nginx.entrypoints=web"
       - "traefik.port=80"
       - "traefik.http.middlewares.nginxheaders.headers.accesscontrolalloworiginlist=http://localhost:80" 
@@ -98,16 +98,9 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.product-service.rule=Host(`localhost`) && Path(`/api/products{any:.*}`, `/api/categories{any2:.*}`) && Method(`POST`, `DELETE`, `PUT`,`GET`)"
       - "traefik.http.routers.product-service.entrypoints=web"
-     # - "traefik.http.middlewares.product-service.replacepath.path=/api/Products"
       - "traefik.port=80"
       - "traefik.http.middlewares.testheader.headers.accesscontrolalloworiginlist=http://localhost"
-      #- "traefik.http.middlewares.productsAuth.forwardauth.address=http://host.docker.internal:6200/auth"
-      #- "traefik.http.middlewares.productsAuth.forwardauth.authResponseHeaders=Authorization"
       - "traefik.http.routers.product-service.middlewares= testheader@docker"
-      #- traefik.http.routers.product-service.middlewares=product-service@docker
-      #- "traefik.http.routers.product-service.service=product-service@docker"
-      #- "traefik.http.services.product-service.loadbalancer.server.port=80"
-      #- "traefik.http.services.product-service.loadbalancer.server.scheme=http"
     environment:
       - DBHOST=mssql
       - ASPNETCORE_ENVIRONMENT=Development
@@ -133,10 +126,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.basket-service.rule=Host(`localhost`) && Path(`/api/basket{any:.*}`)"
       - "traefik.http.routers.basket-service.entrypoints=web"
-      #- "traefik.http.middlewares.basket-service.replacepath.path=/api/basket"
       - "traefik.port=80"
-     # - traefik.http.routers.basket-service.middlewares=basket-service@docker
-
   mongoDB:
     image: mongo
     restart: unless-stopped
@@ -163,23 +153,9 @@ services:
       # The Web UI (enabled by --api.insecure=true)
       - "8080:8080"
     volumes:
-      # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config/traefik.yml:/traefik.yml:ro
       - ./config/acme:/acme
-    #labels:
-     # - "traefik.enable=true"
-     # - "traefik.http.routers.traefik-proxy.entrypoints=http"
-     #- "traefik.http.routers.traefik-proxy.rule=Host(`localhost`)"
-     # - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:secret_password"
-     # - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
-     # - "traefik.http.routers.traefik-proxy.middlewares=traefik-https-redirect"
-     # - "traefik.http.routers.traefik-proxy-secure.entrypoints=https"
-     # - "traefik.http.routers.traefik-proxy-secure.rule=Host(`localhost`)"
-     # - "traefik.http.routers.traefik-proxy-secure.middlewares=traefik-auth"
-     # - "traefik.http.routers.traefik-proxy-secure.tls=true"
-     # - "traefik.http.routers.traefik-proxy-secure.tls.certresolver=http"
-     # - "traefik.http.routers.traefik-proxy-secure.service=api@internal"
     networks:
       - traefik-net
       - products-net

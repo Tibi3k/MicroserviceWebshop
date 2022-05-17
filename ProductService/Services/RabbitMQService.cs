@@ -1,5 +1,6 @@
 ﻿using BasketService.Services;
 using MassTransit;
+using ProductService.DAL;
 using ProductService.Model;
 using RabbitMQ.Client;
 using System.Text.Json;
@@ -34,6 +35,25 @@ namespace ProductService.Services
             }
 
         }
+
+        public class ProductQuantityRestoreConsumer : IConsumer<IQuantityTransfer>
+        {
+            private readonly IServiceProvider serviceProvider;
+
+            public ProductQuantityRestoreConsumer(IServiceProvider serviceProvider)
+            {
+                this.serviceProvider = serviceProvider;
+                Console.WriteLine("constructed");
+            }
+            public async Task Consume(ConsumeContext<IQuantityTransfer> context)
+            {
+                var scope = serviceProvider.CreateScope();
+                var repository = scope.ServiceProvider.GetService<IProductsRepository>();
+                Console.WriteLine("id:" + context.Message.productId);
+                await repository.AddQuantityToProduct(context.Message.productId, context.Message.quantity);
+            }
+
+        }
     }
 }
 
@@ -45,5 +65,11 @@ namespace BasketService.Services
         string UserId { get; set; }
         string Email { get; set; }
         DateTime AddTime { get; set; }
+    }
+
+    public interface IQuantityTransfer
+    {
+        int productId { get; set; }
+        int quantity { get; set; }
     }
 }

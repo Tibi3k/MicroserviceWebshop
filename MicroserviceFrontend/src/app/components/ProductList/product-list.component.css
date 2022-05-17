@@ -45,6 +45,7 @@ table {
   flex-direction: column;
   justify-content: left;
   align-items: flex-start;
+  padding: 5px;
 }
 
 .button-spinner-container{

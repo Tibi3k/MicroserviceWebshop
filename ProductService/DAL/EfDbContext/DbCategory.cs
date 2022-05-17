@@ -1,4 +1,6 @@
-﻿namespace ProductService.DAL.EfDbContext
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ProductService.DAL.EfDbContext
 {
     public class DbCategory
     {

@@ -21,6 +21,10 @@ export class BasketComponent implements OnInit {
   loadState = RequestState.loading
   state = RequestState
   errorMsg = "Something went wrong, please try again later!"
+  errorMap: Array<Number> = []
+  loadingMap: Array<Number> = []
+  orderLoading = false
+  orderError = false
 
   constructor(
     private basketService: BasketService, 
@@ -32,23 +36,34 @@ export class BasketComponent implements OnInit {
   }
 
   removeItemFromCart(product: BasketProduct){
-    this.loadState = this.state.loading
+    this.removeItemFromList(this.errorMap, product.id)
+    this.loadingMap.push(product.id)  
     this.basketService.deleteProductFromBasket(product.basketSubId)
       .subscribe({
         next:(result) => {
+          this.removeItemFromList(this.loadingMap, product.id)
           this.basketService.getUserBasket()
-          this.loadState = RequestState.success
         },
         error: (error) => {
-          this.loadState = this.state.error
-          this.errorMsg = error?.message
+          this.removeItemFromList(this.loadingMap, product.id)
+          this.errorMap.push(product.id)
         }
     })
   }
 
   orderBasket(){
+    this.orderLoading = true
     this.basketService.orderBasket()
-      .subscribe(result => {this.getUserBasket()})
+      .subscribe({
+        next: result => {
+          this.orderLoading = false
+          this.getUserBasket()
+        },
+        error: error => {
+          this.orderLoading = false
+          this.orderError = true
+        }
+      })
   }
 
   getUserBasket(){
@@ -59,7 +74,8 @@ export class BasketComponent implements OnInit {
           this.basket = basket
           if(basket != null){
             this.dataSource = basket.products
-            this.myTable?.renderRows()
+          } else {
+            this.dataSource = []
           }
           this.loadState = this.state.success
         },
@@ -69,5 +85,12 @@ export class BasketComponent implements OnInit {
         }
     })
   }
+
+  removeItemFromList(list: Array<Number>, id: Number){
+    let index = list.indexOf(id)
+    if(index > -1)
+      list.splice(index, 1)
+  }
+
 }
 

@@ -6,5 +6,6 @@ namespace BasketService.Services
     {
         public Task ConvertBasketToOrderAsync(UserBasket basket, string name);
         public Task SendOrderConfirmationEmailAsync(UserBasket basket, string name);
+        public Task ReturnAvailableAmountToProduct(int productId, int quantity);
     }
 }

@@ -44,8 +44,12 @@ namespace BasketService.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteProductFromBasket( string productSubId) {
             var userID = getUserIdFromClaim(User);
+            var product = await repository.FindQuantityByBasketSubId(productSubId, userID);
+            Console.WriteLine("returning product" + product?.Quantity ?? "null");
+            if (product != null)
+                await rabbitMQ.ReturnAvailableAmountToProduct(product.Id, product.Quantity);
             var modifiedLines = await repository.DeleteProductFromBasketAsync(userID, productSubId);
-            if(modifiedLines > 0)
+            if (modifiedLines > 0)
                 return Ok($"Modified {modifiedLines} lines");
             return NoContent();
         }

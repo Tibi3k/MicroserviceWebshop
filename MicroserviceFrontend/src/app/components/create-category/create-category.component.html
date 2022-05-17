@@ -13,10 +13,10 @@
               >Please add a name!</mat-error
             >
           </mat-form-field>
-          <div *ngIf="this.loadState == this.state.loading">
+          <div *ngIf="this.loadState == this.state.loading" class="loading">
             <mat-spinner [diameter]="50"></mat-spinner>
           </div>
-          <div *ngIf="this.loadState == this.state.error">
+          <div *ngIf="this.loadState == this.state.error" class="error">
             {{errorMsg}}
           </div>
           <button

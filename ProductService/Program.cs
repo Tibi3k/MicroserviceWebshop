@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using Hellang.Middleware.ProblemDetails;
+using static ProductService.Services.RabbitMQService;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.CaptureStartupErrors(true);
@@ -18,14 +19,9 @@ var connectionString = builder.Configuration.GetConnectionString("DatabaseConnec
 
 
 builder.Services.AddDbContext<ProductService.DAL.EfDbContext.ProductDbContext>(options => {
-    options.UseSqlServer(connectionString, 
-    sqlOptions => sqlOptions.EnableRetryOnFailure(
-       maxRetryCount: 10,
-       maxRetryDelay: TimeSpan.FromSeconds(1),
-       errorNumbersToAdd: null)
-    );
+    options.UseSqlServer(connectionString);
 });
-builder.Services.AddScoped<ProductService.DAL.IProductsRepository, ProductService.DAL.ProductsRepository>();
+builder.Services.AddScoped<IProductsRepository,ProductsRepository>();
 
 builder.Services.AddProblemDetails(options =>
 {
@@ -50,7 +46,11 @@ builder.Services.AddMassTransit(options => {
             h.Password("guest");
             h.Username("guest");
         });
-        
+        cfg.ReceiveEndpoint("ProductQuantityReturnQueue", e =>
+        {
+            var service = context.GetRequiredService(typeof(IServiceProvider)) as IServiceProvider;
+            e.Consumer(() => new ProductQuantityRestoreConsumer(service));
+        });
     });
 });
 
@@ -83,13 +83,6 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
-
-//using (var serviceScope = app.Services.CreateScope())
-//{
-//    var context = serviceScope.ServiceProvider.GetRequiredService<ProductService.DAL.EfDbContext.ProductDbContext>();
-//    //context.Database.EnsureCreated();
-//}
-//app.UseProblemDetails();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

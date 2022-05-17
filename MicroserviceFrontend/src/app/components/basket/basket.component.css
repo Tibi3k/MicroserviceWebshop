@@ -45,3 +45,15 @@ table {
     padding: 5px;
     background-color: #fff;
 }
+
+.button-spinner-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+  }
+
+  .ordererror{
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+  }

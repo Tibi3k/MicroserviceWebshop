@@ -20,14 +20,16 @@ namespace BasketService.Services
 
         public class OrderSubmittedEventConsumer : IConsumer<IProductWithUserId>
         {
-            private readonly IBasketRepository repository;
+            private readonly IServiceProvider serviceProvider;
 
-            public OrderSubmittedEventConsumer(IBasketRepository repository) {
-                this.repository = repository;
+            public OrderSubmittedEventConsumer(IServiceProvider serviceProvider) {
+                this.serviceProvider = serviceProvider;
             }
             public async Task Consume(ConsumeContext<IProductWithUserId> context)
             {
                 Console.WriteLine("Product recieved" + context.Message.Product);
+                var scope = serviceProvider.CreateScope();
+                var repository = scope.ServiceProvider.GetService<IBasketRepository>();
                 var product = new Product
                 {
                     Id = context.Message.Product.Id,
@@ -72,6 +74,16 @@ namespace BasketService.Services
             });
         }
 
+        public async Task ReturnAvailableAmountToProduct(int productId, int quantity)
+        {
+            var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:ProductQuantityReturnQueue"));
+            await endpoint.Send<IQuantityTransfer>(new
+            {
+                productId = productId,
+                quantity = quantity
+            });
+        }
+
     }
 
     public interface IProductWithUserId
@@ -101,6 +113,11 @@ namespace BasketService.Services
         int TotalCost { get; set; }
         string UserId { get; set; }
         DateTime OrderTime { get; set; }
+    }
+
+    public interface IQuantityTransfer { 
+        int productId { get; set; }
+        int quantity { get; set; }
     }
 
 }

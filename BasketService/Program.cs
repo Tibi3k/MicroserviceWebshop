@@ -21,7 +21,7 @@ builder.Services.AddScoped<IRabbitMQService, RabbitMQService>();
 var mongoDBConnectionString = builder.Configuration.GetConnectionString("MongoDBConnection");
 builder.Services.AddSingleton<IMongoClient>(new MongoClient(mongoDBConnectionString));
 
-builder.Services.AddSingleton(sp =>
+builder.Services.AddScoped(sp =>
 {
     var client = sp.GetRequiredService<IMongoClient>();
     return client.GetDatabase("basket");
@@ -40,7 +40,7 @@ builder.Services.AddMassTransit(options => {
 
         cfg.ReceiveEndpoint("ProductToBasketQueue3", e =>
         {
-            var service = context.GetRequiredService(typeof(IBasketRepository)) as IBasketRepository;
+            var service = context.GetRequiredService(typeof(IServiceProvider)) as IServiceProvider;
             e.Consumer(() => new OrderSubmittedEventConsumer(service));
             e.RethrowFaultedMessages();
         });

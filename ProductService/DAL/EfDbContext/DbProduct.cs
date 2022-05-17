@@ -7,5 +7,6 @@
 
         public string Description { get; set; } = "";
         public DbCategory Category { get; set;}
+        public int CategoryId { get; set; }
     }
 }

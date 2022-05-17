@@ -10,6 +10,24 @@ namespace BasketService.DAL
         public BasketRepository(IMongoDatabase database) {
             this.basketsCollection = database.GetCollection<DbBasket>("baskets");
         }
+
+        public async Task<Product?> FindQuantityByBasketSubId(string productId, string userId) {
+            var productGuid = Guid.Parse(productId);
+            var basket = await this.basketsCollection.Find(basket => basket.UserId == userId).SingleOrDefaultAsync();
+            if (basket == null)
+                return null;
+            var prod = basket.Products.Where(p => p.BasketSubId == productGuid).SingleOrDefault();
+            if (prod == null)
+                return null;
+            return new Product
+            {
+                Id = prod.Id,
+                Category = "",
+                Quantity = prod.Quantity,
+                Price = prod.Price
+            };
+        }
+
         public async Task AddProductToBasketAsync(Product product, string userId, string email)
         {
 
