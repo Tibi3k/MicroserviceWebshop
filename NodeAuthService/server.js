@@ -16,8 +16,11 @@ const options = {
 }
 
 const bearerStrategy = new BearerStrategy(options, (token, done) => {
-        // Send user info using the second argument
-        done(null, { }, token);
+        if (!token.oid) 
+            done(new Error("oid is not found in token"));
+        else {
+            done(null,{ }, token);
+        }
     }
 );
 
@@ -32,6 +35,7 @@ passport.use(bearerStrategy);
 app.get('/auth',
     passport.authenticate('oauth-bearer', {session: false}),
     (req, res) => {
+        console.log("req", req.authInfo)
         res.header('Email', base64Encode(req.authInfo.emails[0]))
         res.header('UserId',  base64Encode(req.authInfo.oid))
         res.header('UserName', base64Encode(req.authInfo.family_name + req.authInfo.given_name))
