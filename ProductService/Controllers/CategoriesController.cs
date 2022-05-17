@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProductService.DAL;
 using ProductService.Model;
 using System.Security.Claims;
+using System.Text;
 
 namespace ProductService.Controllers
 {
@@ -17,7 +18,6 @@ namespace ProductService.Controllers
             this.repository = respository;
         }
 
-        [AllowAnonymous]
         [HttpGet("get")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Category>>> GetAllCategories()
@@ -26,13 +26,21 @@ namespace ProductService.Controllers
             return Ok(res);
         }
 
-        [Authorize(Policy = "Admin")]
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Category>> CreateCategory([FromBody] string name) {
-            Console.WriteLine("name:" + HttpContext?.User?.Identity?.Name);
+            var role = decodeUserData("jobTitle");
+            if (role != "Admin")
+                return Unauthorized();
             var result = await this.repository.AddCategory(name);
             return Ok(result);
+        }
+
+        private string decodeUserData(string data)
+        {
+            Console.WriteLine("res:" + Request.Headers[data]);
+            var encodedUserData = Request.Headers[data].ToString() ?? "";
+            return Encoding.UTF8.GetString(Convert.FromBase64String(encodedUserData));
         }
     }
 }

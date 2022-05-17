@@ -40,12 +40,27 @@ services:
       - basket-net
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.auth-service.rule=Host(`localhost`) && Path(`/api/orders{any:.*}`)"
-      - "traefik.http.routers.auth-service.entrypoints=web"
+      - "traefik.http.routers.order-service.rule=Host(`localhost`) && Path(`/api/orders{any:.*}`)"
+      - "traefik.http.routers.order-service.entrypoints=web"
       - "traefik.port=80"
+      - "traefik.http.middlewares.order-auth.forwardauth.address=http://host.docker.internal:6200/auth"
+      - "traefik.http.middlewares.order-auth.forwardauth.authResponseHeaders=Email, UserId, UserName, jobTitle"
+      - "traefik.http.routers.order-service.middlewares=order-auth@docker"
     depends_on:
       - RabbitMQ
       - mongoDB
+  auth-service:
+    build:
+      context: .
+      dockerfile: NodeAuthService/Dockerfile
+    restart: unless-stopped
+    networks:
+      - traefik-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth-service.rule=Host(`localhost`) && Path(`/auth{any:.*}`)"
+      - "traefik.http.routers.auth-service.entrypoints=web"
+      - "traefik.port=6200"
   nginx:
     container_name: AngularNginx
     build: 
@@ -96,11 +111,15 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.product-service.rule=Host(`localhost`) && Path(`/api/products{any:.*}`, `/api/categories{any2:.*}`) && Method(`POST`, `DELETE`, `PUT`,`GET`)"
+      - "traefik.http.routers.product-service-free.rule=Host(`localhost`) && Path(`/api/products/public{any11:.*}`, `/api/categories/get{any12:.*}`)"
+      - "traefik.http.routers.product-service-free.entrypoints=web"
+      - "traefik.http.routers.product-service.rule=Host(`localhost`) && Path(`/api/products/protected{any:.*}`, `/api/categories/create{any2:.*}`)"
       - "traefik.http.routers.product-service.entrypoints=web"
       - "traefik.port=80"
-      - "traefik.http.middlewares.testheader.headers.accesscontrolalloworiginlist=http://localhost"
-      - "traefik.http.routers.product-service.middlewares= testheader@docker"
+      - "traefik.http.middlewares.product-auth.forwardauth.address=http://host.docker.internal:6200/auth"
+      - "traefik.http.middlewares.product-auth.forwardauth.authResponseHeaders=Email, UserId, UserName, jobTitle"
+      - "traefik.http.routers.product-service.middlewares= product-auth@docker"
+
     environment:
       - DBHOST=mssql
       - ASPNETCORE_ENVIRONMENT=Development
@@ -127,6 +146,9 @@ services:
       - "traefik.http.routers.basket-service.rule=Host(`localhost`) && Path(`/api/basket{any:.*}`)"
       - "traefik.http.routers.basket-service.entrypoints=web"
       - "traefik.port=80"
+      - "traefik.http.middlewares.basketAuth.forwardauth.address=http://host.docker.internal:6200/auth"
+      - "traefik.http.middlewares.basketAuth.forwardauth.authResponseHeaders=Email, UserId, UserName, jobTitle"
+      - "traefik.http.routers.basket-service.middlewares= basketAuth@docker"
   mongoDB:
     image: mongo
     restart: unless-stopped

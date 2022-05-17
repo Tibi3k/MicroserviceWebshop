@@ -8,10 +8,6 @@ using OrderService.services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAdB2C"));
-
 var mongoDBConnectionString = builder.Configuration.GetConnectionString("MongoDBConnection");
 builder.Services.AddSingleton<IMongoClient>(new MongoClient(mongoDBConnectionString));
 
@@ -45,14 +41,6 @@ builder.Services.AddMassTransit(options => {
             e.Consumer(() => new OrderSubmittedEventConsumer(service));
         });
     });
-});
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("User", policy =>
-        policy.RequireClaim("http://schemas.microsoft.com/identity/claims/objectidentifier"));
-    options.AddPolicy("Admin", policy =>
-        policy.RequireClaim("jobTitle", "Admin"));
 });
 
 builder.Services.AddControllers();

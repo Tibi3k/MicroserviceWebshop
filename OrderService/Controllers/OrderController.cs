@@ -4,6 +4,7 @@ using Microsoft.Identity.Web.Resource;
 using OrderService.DAL.DbModel;
 using OrderService.Model;
 using System.Security.Claims;
+using System.Text;
 
 namespace OrderService.Controllers;
 
@@ -20,24 +21,21 @@ public class OrderController : ControllerBase
         _logger = logger;
     }
 
-    [Authorize(Policy = "User")]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult<Order>> getOrdersOfUser() {
-        var userId = getUserIdFromClaim(User);
+        var userId = decodeUserData("UserId");
         var order = await this.repository.GetOrdersOfUser(userId);
         if (order == null)
             return NoContent();
         return Ok(order);
     }
 
-    private string getUserIdFromClaim(ClaimsPrincipal principal)
+    private string decodeUserData(string data)
     {
-        return principal.Claims
-            .FirstOrDefault(claim =>
-             claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")!
-            .Value;
+        var encodedUserData = Request.Headers[data].ToString() ?? "";
+        return Encoding.UTF8.GetString(Convert.FromBase64String(encodedUserData));
     }
 
 }

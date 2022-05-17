@@ -7,6 +7,7 @@ using ProductService.DAL;
 using ProductService.Model;
 using ProductService.Services;
 using System.Security.Claims;
+using System.Text;
 using static ProductService.Services.RabbitMQService;
 
 namespace ProductService.Controllers
@@ -22,7 +23,6 @@ namespace ProductService.Controllers
             this.rabbitmq = rabbitmq;
         }
 
-        [AllowAnonymous]
         [HttpGet("public")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<Product>>> GetAllProducts() {
@@ -30,7 +30,6 @@ namespace ProductService.Controllers
                 return Ok(result.ToList());
         }
 
-        [AllowAnonymous]
         [HttpGet("public/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -49,22 +48,26 @@ namespace ProductService.Controllers
 
         }
 
-        [Authorize(Policy = "Admin")]
         [HttpPost("protected")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Product>> addProduct([FromBody] CreateProduct createProduct)
         {
-                var product = await this.repository.AddNewProduct(createProduct);
-                return CreatedAtAction(nameof(FindById), new { id = product.Id }, product);
+            var role = decodeUserData("jobTitle");
+            if (role != "Admin")
+                return Unauthorized();
+            var product = await this.repository.AddNewProduct(createProduct);
+            return CreatedAtAction(nameof(FindById), new { id = product.Id }, product);
         }
 
-        [Authorize(Policy = "Admin")]
         [HttpDelete("protected/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Product>> DeleteProduct(int id) {
             try {
+                var role = decodeUserData("jobTitle");
+                if (role != "Admin")
+                    return Unauthorized();
                 var result = await this.repository.DeleteProduct(id);
                 if (result == null)
                     return NotFound();
@@ -75,7 +78,6 @@ namespace ProductService.Controllers
             }
         }
 
-        [Authorize(Policy = "Admin")]
         [HttpPut("protected")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -83,6 +85,9 @@ namespace ProductService.Controllers
         {
             try
             {
+                var role = decodeUserData("jobTitle");
+                if (role != "Admin")
+                    return Unauthorized();
                 var result = await this.repository.UpdateProduct(product);
                 if (result == null)
                     return BadRequest();
@@ -94,22 +99,15 @@ namespace ProductService.Controllers
 
         }
 
-        [Authorize(Policy = "User")]
         [HttpPost("protected/{productID}/tobasket")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> AddProductToBasket([FromQuery] int? amount, int productID) {
-            var userID = getUserIdFromClaim(User);
+            var userID = decodeUserData("UserId");
             if (amount == null)
                 return BadRequest("Amount not specified");
-            var email = User.Claims.First(claim => claim.Type == "emails").Value;
-            Product? product;
-            try{
-                product = await this.repository.FindById(productID).WaitAsync(TimeSpan.FromSeconds(5));
-            }
-            catch (Exception ex) {
-                return Problem();
-            }
+            var email = decodeUserData("Email");
+            var  product = await this.repository.FindById(productID).WaitAsync(TimeSpan.FromSeconds(5));
             if (product == null)
                 return BadRequest("Invalid productID");
             if (product.Quantity < amount)
@@ -124,12 +122,11 @@ namespace ProductService.Controllers
             return Problem("Something went wrong!");
 
         }
-        private string getUserIdFromClaim(ClaimsPrincipal principal)
+        private string decodeUserData(string data)
         {
-            return principal.Claims
-                .FirstOrDefault(claim =>
-                 claim.Type == "http://schemas.microsoft.com/identity/claims/objectidentifier")!
-                .Value;
+            Console.WriteLine("res:" + Request.Headers[data]);
+            var encodedUserData = Request.Headers[data].ToString() ?? "";
+            return Encoding.UTF8.GetString(Convert.FromBase64String(encodedUserData));
         }
     }
 
