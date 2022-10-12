@@ -20,6 +20,9 @@ import { IPublicClientApplication,PublicClientApplication, InteractionType, Brow
 import { environment } from 'src/environments/environment';
 import { ErrorInterceptor } from './services/providers/error.interceptor';
 import { AngularMaterialModule } from './angular-material.module';
+import { PaymentComponent } from './components/payment/payment.component';
+import { NgxPayPalModule } from 'ngx-paypal';
+
 
 @NgModule({
   declarations: [
@@ -30,6 +33,7 @@ import { AngularMaterialModule } from './angular-material.module';
     OrderComponent,
     CreateProductComponent,
     CreateCategoryComponent,
+    PaymentComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,7 +43,8 @@ import { AngularMaterialModule } from './angular-material.module';
     BrowserAnimationsModule,
     MsalModule,
     AngularMaterialModule,
-    FormsModule
+    FormsModule,
+    NgxPayPalModule
   ],
   providers: [
     BackendService,

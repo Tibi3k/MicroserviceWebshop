@@ -4,6 +4,7 @@ import { BasketComponent } from './components/basket/basket.component';
 import { CreateCategoryComponent } from './components/create-category/create-category.component';
 import { CreateProductComponent } from './components/create-product/create-product.component';
 import { OrderComponent } from './components/order/order.component';
+import { PaymentComponent } from './components/payment/payment.component';
 import { ProductListComponent } from './components/ProductList/product-list.component';
 import { AuthGuard } from './services/providers/auth.guard';
 
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'createproduct', component: CreateProductComponent, canActivate: [AuthGuard]},
   { path: 'createcategory', component: CreateCategoryComponent, canActivate: [AuthGuard] },
   { path: 'edit/:productId', component: CreateProductComponent, canActivate: [AuthGuard]},
+  { path: 'payment', component: PaymentComponent}
 ];
 
 @NgModule({

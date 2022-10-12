@@ -6,6 +6,9 @@
 			<li routerLink="/">
 					Products
 				</li>
+			<li routerLink="/payment">
+					Payment
+				</li>
 			<li *ngIf="this.currentUser != null" routerLink="/basket"  >
 					<span [matBadge]="this.basketCount" [matBadgeHidden]="this.basketCount == 0">Basket</span>
 				</li>

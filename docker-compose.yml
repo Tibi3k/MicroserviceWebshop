@@ -12,6 +12,7 @@ volumes:
      type: tmpfs
      device: tmpfs
   mongod:
+    driver: local
   postgres_data:
     driver: local
    
@@ -159,8 +160,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: basketDB
     networks:
       - basket-net
-    volumes:
-      - mongod
 
   traefik-proxy:
     # The official v2 Traefik docker image
