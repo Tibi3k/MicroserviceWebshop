@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RequestState } from '../../model/request-state.model';
 import { BackendService } from '../../services/backend.service';
@@ -16,14 +16,14 @@ export class CreateCategoryComponent implements OnInit {
     private router: Router
   ) { }
 
-  form!: FormGroup
+  form!: UntypedFormGroup
   errorMsg = "Somthing went wrong!"
   state = RequestState
   loadState = RequestState.success
 
   ngOnInit(): void {
-    this.form = new FormGroup({
-      name: new FormControl(null, {
+    this.form = new UntypedFormGroup({
+      name: new UntypedFormControl(null, {
         validators: [Validators.required, Validators.minLength(3)],
       })
     })

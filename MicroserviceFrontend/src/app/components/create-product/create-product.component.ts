@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Form, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Form, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Product, ProductCreate } from '../../model/product.model';
 import { AuthService } from '../../services/auth.service';
@@ -11,7 +11,7 @@ import { BackendService } from '../../services/backend.service';
   styleUrls: ['./create-product.component.css'],
 })
 export class CreateProductComponent implements OnInit {
-  form!: FormGroup
+  form!: UntypedFormGroup
   constructor(
     public route: ActivatedRoute,
     public authService: AuthService,
@@ -85,14 +85,14 @@ export class CreateProductComponent implements OnInit {
   }
 
   createForm(){
-    this.form = new FormGroup({
-      name: new FormControl(null, {
+    this.form = new UntypedFormGroup({
+      name: new UntypedFormControl(null, {
         validators: [Validators.required, Validators.minLength(3)],
       }),
-      description: new FormControl(null, { validators: [Validators.required] }),
-      quantity: new FormControl(null, {validators: [Validators.required],}),
-      price: new FormControl(null, { validators: [Validators.required] }),
-      category: new FormControl(null, { validators: [Validators.required] }),
+      description: new UntypedFormControl(null, { validators: [Validators.required] }),
+      quantity: new UntypedFormControl(null, {validators: [Validators.required],}),
+      price: new UntypedFormControl(null, { validators: [Validators.required] }),
+      category: new UntypedFormControl(null, { validators: [Validators.required] }),
     });
   }
 
