@@ -57,3 +57,10 @@ table {
       flex-direction: column;
       justify-content: flex-end;
   }
+
+  .payment {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+  }

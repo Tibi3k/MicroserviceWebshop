@@ -7,7 +7,8 @@
         "value": "220.00"
       },
       "payee": {
-        "email_address": "sb-dnoc4320943156@business.example.com"
+        "email_address": "sb-dnoc4320943156@business.example.com",
+        "merchant_id": "CMRFZV8SL7DEN"
       }
     }
   ]

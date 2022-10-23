@@ -50,6 +50,29 @@ services:
     depends_on:
       - RabbitMQ
       - mongoDB
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: PaymentService/Dockerfile
+    restart: unless-stopped
+    networks:
+      #- products-net
+      - rabbitMQnet
+      - traefik-net
+      - basket-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.payment-service.rule=Host(`localhost`) && Path(`/api/payment{any:.*}`)"
+      - "traefik.http.routers.payment-service.entrypoints=web"
+      - "traefik.port=80"
+      - "traefik.http.middlewares.payment-auth.forwardauth.address=http://host.docker.internal:6200/auth"
+      - "traefik.http.middlewares.payment-auth.forwardauth.authResponseHeaders=Email, UserId, UserName, jobTitle"
+      - "traefik.http.routers.payment-service.middlewares=payment-auth@docker"
+    depends_on:
+      - RabbitMQ
+      - mongoDB
+
   auth-service:
     build:
       context: .

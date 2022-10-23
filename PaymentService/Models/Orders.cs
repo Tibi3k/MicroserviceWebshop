@@ -1,11 +1,5 @@
 ﻿namespace PaymentService.Models;
 
-public class Amount
-{
-  public string currency_code { get; set; }
-  public string value { get; set; }
-}
-
 public class BillingAddress
 {
   public string address_line_1 { get; set; }
@@ -35,13 +29,6 @@ public class PreviousNetworkTransactionReference
   public string id { get; set; }
   public string network { get; set; }
 }
-
-public class PurchaseUnit
-{
-  public string reference_id { get; set; }
-  public Amount amount { get; set; }
-}
-
 public class Order
 {
   public string intent { get; set; }

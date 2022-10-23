@@ -1,6 +1,7 @@
 ﻿using BasketService.DAL;
 using BasketService.Model;
 using MassTransit;
+using Microsoft.Graph;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text.Json;
@@ -45,8 +46,27 @@ namespace BasketService.Services
             }
 
         }
+    public class PaymentCompletedEventConsumer : IConsumer<IBasketTransfer>
+    {
+      private readonly IServiceProvider serviceProvider;
 
-        public async Task<bool> ConvertBasketToOrderAsync(UserBasket basket, string name) {
+      public PaymentCompletedEventConsumer(IServiceProvider serviceProvider)
+      {
+        this.serviceProvider = serviceProvider;
+      }
+      public async Task Consume(ConsumeContext<IBasketTransfer> context)
+      {
+        var scope = serviceProvider.CreateScope();
+        var repository = scope.ServiceProvider.GetService<IBasketRepository>();
+        var rabbitMq = scope.ServiceProvider.GetService<IRabbitMQService>();
+        var basket = await repository.FindBasketByUserIdAsync(context.Message.UserId);
+        var result1 = await rabbitMq.ConvertBasketToOrderAsync(basket, context.Message.Name);
+        var result2 = await rabbitMq.SendOrderConfirmationEmailAsync(basket, context.Message.Name);
+        await repository.ClearBasket(context.Message.UserId);
+      }
+    }
+
+    public async Task<bool> ConvertBasketToOrderAsync(UserBasket basket, string name) {
             var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:BasketToOrderQueue"));
             Console.WriteLine("sending basket:" + basket.ToString());
             try

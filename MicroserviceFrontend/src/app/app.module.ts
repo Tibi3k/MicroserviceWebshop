@@ -117,6 +117,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   protectedResourceMap.set('http://localhost/api/categories/create', [environment.scopeUrl]);
   protectedResourceMap.set('http://localhost/api/basket/', [environment.scopeUrl]);
   protectedResourceMap.set('http://localhost/api/orders/', [environment.scopeUrl]);
+  protectedResourceMap.set('http://localhost/api/payment/', [environment.scopeUrl]);
 
   return {
     interactionType: InteractionType.Popup,

@@ -50,6 +50,11 @@ builder.Services.AddMassTransit(options => {
             var service = context.GetRequiredService(typeof(IServiceProvider)) as IServiceProvider;
             e.Consumer(() => new OrderSubmittedEventConsumer(service));
         });
+      cfg.ReceiveEndpoint("PaymentBasketQueue", e =>
+      {
+        var service = context.GetRequiredService(typeof(IServiceProvider)) as IServiceProvider;
+        e.Consumer(() => new PaymentCompletedEventConsumer(service));
+      });
     });
 });
 

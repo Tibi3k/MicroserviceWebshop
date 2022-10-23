@@ -77,3 +77,8 @@
   <div class="error" *ngIf="this.loadState === state.error">
     {{errorMsg}}
   </div>
+  <div class="payment">
+    <app-payment *ngIf="this.basket != null && this.basket?.products?.length != 0"
+    [basket]="basket">
+   </app-payment>
+  </div>

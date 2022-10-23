@@ -1,1 +1,11 @@
-<p>payment works!</p>
+<div *ngIf="showSuccess">
+    success
+</div>
+<div *ngIf="showError">
+    error
+</div>
+<div *ngIf="showCancel">
+    cancel
+</div>
+
+<ngx-paypal [config]="payPalConfig" class="payment"></ngx-paypal>
