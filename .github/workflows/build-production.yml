@@ -41,7 +41,7 @@ jobs:
       - name: Build and push basket-service
         uses: docker/build-push-action@v3.0.0
         with:
-          context: ./BasketService
+          context: ./
           tags: ${{secrets.ACR_NAME}}/basket-service:latest
           push: true
           

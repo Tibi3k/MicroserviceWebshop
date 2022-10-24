@@ -7,7 +7,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["BasketService.csproj", "BasketService/"]
+COPY ["BasketService/BasketService.csproj", "BasketService/"]
 RUN dotnet restore "BasketService/BasketService.csproj"
 COPY . .
 WORKDIR "/src/BasketService"
