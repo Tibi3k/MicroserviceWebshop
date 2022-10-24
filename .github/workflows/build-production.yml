@@ -42,42 +42,42 @@ jobs:
         uses: docker/build-push-action@v3.0.0
         with:
           context: ./BasketService
-          tags: ${{secrets.ACR_NAME}}/basket-service:latest,${{secrets.ACR_NAME}}/basket-service:${{ steps.fetch_version.outputs.TAG }}
+          tags: ${{secrets.ACR_NAME}}/basket-service:latest
           push: true
           
       - name: Build and push email-service
         uses: docker/build-push-action@v3.0.0
         with:
           context: ./EmailService
-          tags: ${{secrets.ACR_NAME}}/email-service:latest,${{secrets.ACR_NAME}}/email-service:${{ steps.fetch_version.outputs.TAG }}
+          tags: ${{secrets.ACR_NAME}}/email-service:latest
           push: true
 
       - name: Build and push order-service
         uses: docker/build-push-action@v3.0.0
         with:
           context: ./OrderService
-          tags: ${{secrets.ACR_NAME}}/order-service:latest,${{secrets.ACR_NAME}}/order-service:${{ steps.fetch_version.outputs.TAG }}
+          tags: ${{secrets.ACR_NAME}}/order-service:latest
           push: true
 
       - name: Build and push payment-service
         uses: docker/build-push-action@v3.0.0
         with:
           context: ./PaymentService
-          tags: ${{secrets.ACR_NAME}}/payment-service:latest,${{secrets.ACR_NAME}}/payment-service:${{ steps.fetch_version.outputs.TAG }}
+          tags: ${{secrets.ACR_NAME}}/payment-service:latest
           push: true
 
       - name: Build and push product-service
         uses: docker/build-push-action@v3.0.0
         with:
           context: ./ProductService
-          tags: ${{secrets.ACR_NAME}}/product-service:latest,${{secrets.ACR_NAME}}/product-service:${{ steps.fetch_version.outputs.TAG }}
+          tags: ${{secrets.ACR_NAME}}/product-service:latest
           push: true
 
       - name: Build and push node-auth-service
         uses: docker/build-push-action@v3.0.0
         with:
           context: ./NodeAuthService
-          tags: ${{secrets.ACR_NAME}}/node-auth-service:latest,${{secrets.ACR_NAME}}/node-auth-service:${{ steps.fetch_version.outputs.TAG }}
+          tags: ${{secrets.ACR_NAME}}/node-auth-service:latest
           push: true
 
       - name: Build and push nginx-frontend
