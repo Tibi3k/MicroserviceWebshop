@@ -49,42 +49,48 @@ jobs:
       - name: Build and push email-service
         uses: docker/build-push-action@v3.0.0
         with:
-          context: ./EmailService
+          context: ./
+          file: ./EmailService/Dockerfile
           tags: ${{secrets.ACR_NAME}}/email-service:latest
           push: true
 
       - name: Build and push order-service
         uses: docker/build-push-action@v3.0.0
         with:
-          context: ./OrderService
+          context: ./
+          file: ./OrderService/Dockerfile
           tags: ${{secrets.ACR_NAME}}/order-service:latest
           push: true
 
       - name: Build and push payment-service
         uses: docker/build-push-action@v3.0.0
         with:
-          context: ./PaymentService
+          context: ./
+          file: ./PaymentService/Dockerfile
           tags: ${{secrets.ACR_NAME}}/payment-service:latest
           push: true
 
       - name: Build and push product-service
         uses: docker/build-push-action@v3.0.0
         with:
-          context: ./ProductService
+          context: ./
+          file: ./ProductService/Dockerfile
           tags: ${{secrets.ACR_NAME}}/product-service:latest
           push: true
 
       - name: Build and push node-auth-service
         uses: docker/build-push-action@v3.0.0
         with:
-          context: ./NodeAuthService
+          context: ./
+          file: ./NodeAuthService/Dockerfile
           tags: ${{secrets.ACR_NAME}}/node-auth-service:latest
           push: true
 
       - name: Build and push nginx-frontend
         uses: docker/build-push-action@v3.0.0
         with:
-          context: ./MicroserviceFrontend
+          context: ./
+          file: ./MicroserviceFrontend/Dockerfile
           tags: ${{secrets.ACR_NAME}}/nginx-frontend:latest,${{secrets.ACR_NAME}}/nginx-frontend:${{ steps.fetch_version.outputs.TAG }}
           push: true
           
