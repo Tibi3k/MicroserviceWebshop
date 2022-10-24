@@ -1,0 +1,10 @@
+deployment:
+  image: "basket-service"
+  registry: "mswcontainerregistry"
+  tag: "latest"
+  containerPort: 80
+
+name: "basket-service"
+
+database:
+  url: my-mongodb-svc.mongodb

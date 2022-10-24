@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: {{default "staging" .Release.Namespace}}
+  name: {{.Values.name}}
+spec:
+  rules:
+    - http:
+        paths:
+          - path: {{.Values.services.email_service.prefix}}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.email_service.name}}
+                port:
+                  number: {{.Values.services.email_service.port}}
+
+    - http:
+        paths:
+          - path: {{.Values.services.gamelogic_service.prefix}}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.gamelogic_service.name}}
+                port:
+                  number: {{.Values.services.gamelogic_service.port}}

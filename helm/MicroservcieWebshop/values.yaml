@@ -1,0 +1,25 @@
+name: avalon-ingress
+
+services:
+  basket-service:
+    name: basket-service
+    port: 80
+    prefix: /basket
+
+dependencies:
+  basket-service:
+    enabled: true
+  traefik:
+    enabled: true
+
+basket-service:
+  deployment:
+    image: "basket-service"
+    registry: "mswcontainerregistry"
+    tag: "latest"
+    containerPort: 80
+
+  name: "basket"
+
+  # database:
+  #   url: mongodb://user1:user123@mongodb-svc.mongodb/Archimedes-Rest?readPreference=primaryPreferred
