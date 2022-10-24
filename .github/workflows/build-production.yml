@@ -91,7 +91,7 @@ jobs:
         with:
           context: ./
           file: ./MicroserviceFrontend/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/nginx-frontend:latest,${{secrets.ACR_NAME}}/nginx-frontend:${{ steps.fetch_version.outputs.TAG }}
+          tags: ${{secrets.ACR_NAME}}/nginx-frontend:latest
           push: true
           
           
