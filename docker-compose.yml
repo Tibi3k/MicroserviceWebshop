@@ -1,4 +1,4 @@
-﻿version: '3.9'
+﻿version: '3'
 
 volumes:
   datafiles:
@@ -205,6 +205,8 @@ services:
       - products-net
       - basket-net
       - rabbitMQnet
+    labels:
+      kompose.service.type: LoadBalancer
 
   RabbitMQ:
     image: rabbitmq:3.9-management
@@ -219,7 +221,4 @@ services:
     networks:
       - rabbitMQnet
 
-secrets:
-  kong_postgres_password:
-    file: ./config/POSTGRES_PASSWORD
 
