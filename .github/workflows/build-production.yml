@@ -117,6 +117,8 @@ jobs:
           resource-group: ${{ secrets.RESOURCE_GROUP }}
           # AKS Cluster Name
           cluster-name: ${{ secrets.CLUSTER_NAME }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        id: login
         
       - name: Deploy MSSQL service to AKS
         uses: Azure/k8s-deploy@v4
