@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: mssql
+  name: mssql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mssql
+  strategy:
+    type: Recreate
+  template:
+      labels:
+        io.kompose.service: mssql
+    spec:
+      containers:
+        - env:
+            - name: ACCEPT_EULA
+              value: '"Y"'
+            - name: SA_PASSWORD
+              value: Asdf1234
+          image: mcr.microsoft.com/mssql/server:2019-latest
+          name: mssql
+          ports:
+            - containerPort: 1433
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: datafiles
+      restartPolicy: Always
+      volumes:
+        - name: datafiles
+          persistentVolumeClaim:
+            claimName: datafiles
+status: {}
