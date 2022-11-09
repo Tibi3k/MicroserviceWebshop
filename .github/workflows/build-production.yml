@@ -146,9 +146,9 @@ jobs:
           namespace: 'default'
 
           manifests: |
-              Manifests/datafiles-persistentvolumeclaim.yaml
-              Manifests/mssql-deployment.yaml
-              Manifests/mssql-service.yaml
+              Manifests/MSSQL/datafiles-persistentvolumeclaim.yaml
+              Manifests/MSSQL/mssql-deployment.yaml
+              Manifests/MSSQL/mssql-service.yaml
           images: |
               mcr.microsoft.com/mssql/server:2019-latest
 
