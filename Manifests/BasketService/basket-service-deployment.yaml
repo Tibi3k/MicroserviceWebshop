@@ -10,13 +10,13 @@ metadata:
   #   traefik.http.routers.basket-service.rule: Host(`localhost`) && Path(`/api/basket{any:.*}`)
   #   traefik.port: "80"
   labels:
-    io.kompose.service: basket-service
+    io.kompose.service: basket-service-service
   name: basket-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: basket-service
+      io.kompose.service: basket-service-service
   template:
     metadata:
       # annotations:
