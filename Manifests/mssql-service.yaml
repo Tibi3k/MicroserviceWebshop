@@ -2,14 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    io.kompose.service: mssql
+    io.kompose.service: mssql-service
   name: mssql
 spec:
   ports:
     - name: "2666"
       port: 2666
       targetPort: 1433
+  type: LoadBalancer
   selector:
-    io.kompose.service: mssql
-status:
-  loadBalancer: {}
+    io.kompose.service: mssql-service

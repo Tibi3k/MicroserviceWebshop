@@ -118,7 +118,7 @@ jobs:
           # AKS Cluster Name
           cluster-name: ${{ secrets.CLUSTER_NAME }}
         
-      - name: Deploy Basket Service to AKS
+      - name: Deploy MSSQL service to AKS
         uses: Azure/k8s-deploy@v4
         with:
           resource-group: ${{ secrets.RESOURCE_GROUP }}
@@ -126,7 +126,6 @@ jobs:
           action: deploy
           strategy: basic
 
-          private-cluster: true
           manifests: |
               Manifests/mssql-deployment.yaml
               Manifests/mssql-service.yaml

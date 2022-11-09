@@ -25,7 +25,11 @@ spec:
           name: mssql
           ports:
             - containerPort: 1433
-          resources: {}
+          resources: 
+            requests:
+              cpu: 250m
+            limits:
+              cpu: 500m
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: datafiles
