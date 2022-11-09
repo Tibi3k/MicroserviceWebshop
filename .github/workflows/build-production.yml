@@ -115,7 +115,7 @@ jobs:
           sudo unzip -j kubelogin-linux-amd64.zip -d /usr/local/bin
           rm -f kubelogin-linux-amd64.zip
           kubelogin --version
-            
+
       - name: Azure Kubernetes set context
         uses: Azure/aks-set-context@v3
         with:
@@ -123,16 +123,21 @@ jobs:
           resource-group: ${{ secrets.RESOURCE_GROUP }}
           # AKS Cluster Name
           cluster-name: ${{ secrets.CLUSTER_NAME }}
-          admin: 'false'
-          use-kubelogin: 'true'
+          # admin: 'false'
+          # use-kubelogin: 'true'
+
+      - name: Setup kubectl
+        id: install-kubectl
+        uses: azure/setup-kubectl@v3
         
       - name: Deploy MSSQL service to AKS
         uses: Azure/k8s-deploy@v4
         with:
-          resource-group: ${{ secrets.RESOURCE_GROUP }}
-          name: ${{ secrets.CLUSTER_NAME }}
-          action: deploy
-          strategy: basic
+          namespace: 'default'
+          # resource-group: ${{ secrets.RESOURCE_GROUP }}
+          # name: ${{ secrets.CLUSTER_NAME }}
+          # action: deploy
+          # strategy: basic
 
           manifests: |
               Manifests/mssql-deployment.yaml
