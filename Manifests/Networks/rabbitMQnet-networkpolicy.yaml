@@ -2,13 +2,13 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   creationTimestamp: null
-  name: rabbitMQnet
+  name: rabbitmqnet
 spec:
   ingress:
     - from:
         - podSelector:
             matchLabels:
-              io.kompose.network/rabbitMQnet: "true"
+              io.kompose.network/rabbitmqnet: "true"
   podSelector:
     matchLabels:
-      io.kompose.network/rabbitMQnet: "true"
+      io.kompose.network/rabbitmqnet: "true"

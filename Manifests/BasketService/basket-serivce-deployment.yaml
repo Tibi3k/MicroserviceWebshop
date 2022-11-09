@@ -32,7 +32,7 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.network/basket-net: "true"
-        io.kompose.network/rabbitMQnet: "true"
+        io.kompose.network/rabbitmqnet: "true"
         io.kompose.network/traefik-net: "true"
         io.kompose.service: basket-service-service
     spec:
