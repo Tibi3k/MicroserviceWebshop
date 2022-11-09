@@ -129,14 +129,21 @@ jobs:
         id: install-kubectl
         uses: azure/setup-kubectl@v3
         
+      - name: Deploy Networks to AKS
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+
+          manifests: |
+              Manifests/Networks/basket-net-networkpolicy.yaml
+              Manifests/Networks/products-net-networkpolicy.yaml
+              Manifests/Networks/rabbitMQnet-networkpolicy.yaml
+              Manifests/Networks/traefik-net-service-networkpolicy.yaml
+
       - name: Deploy MSSQL service to AKS
         uses: Azure/k8s-deploy@v4
         with:
           namespace: 'default'
-          # resource-group: ${{ secrets.RESOURCE_GROUP }}
-          # name: ${{ secrets.CLUSTER_NAME }}
-          # action: deploy
-          # strategy: basic
 
           manifests: |
               Manifests/datafiles-persistentvolumeclaim.yaml
@@ -144,25 +151,15 @@ jobs:
               Manifests/mssql-service.yaml
           images: |
               mcr.microsoft.com/mssql/server:2019-latest
-      
-      - name: Helm dependency build
-        run: |
-         cd ./helm/MicroserviceWebshop ;
-         helm dependency build 
-        
-      - name: Helm deploy
-        run: |
-         cd ./helm/MicroserviceWebshop ;
-         helm upgrade \
-            --install \
-            --create-namespace \
-            --namespace production \
-            avalon \
-            . \
-            --set basket-service.deployment.registry=${{ secrets.ACR_NAME }} \
-            --set basket-service.deployment.image=basket-service \
 
-#            --atomic \
-#            --wait \
+      - name: Deploy BasketService to AKS
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+
+          manifests: |
+              Manifests/BasketService/basket-service-deployment.yaml
+              Manifests/BasketService/basket-service-service.yaml
+          images: |
+              ${{secrets.ACR_NAME}}/basket-service:latest
       
-          
