@@ -139,6 +139,7 @@ jobs:
           # strategy: basic
 
           manifests: |
+              Manifests/datafiles-persistentvolumeclaim.yaml
               Manifests/mssql-deployment.yaml
               Manifests/mssql-service.yaml
           images: |
