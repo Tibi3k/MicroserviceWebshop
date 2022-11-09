@@ -37,7 +37,8 @@ spec:
         io.kompose.service: basket-service-service
     spec:
       containers:
-        - image: basket-service
+        #TODO fix hogy ne legyen statikus
+        - image: mswebshopregistry.azurecr.io/basket-service:latest
           name: basket-service
           resources: {}
       hostname: basketservice
