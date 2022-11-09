@@ -123,7 +123,6 @@ jobs:
           resource-group: ${{ secrets.RESOURCE_GROUP }}
           # AKS Cluster Name
           cluster-name: ${{ secrets.CLUSTER_NAME }}
-          admin: 'false'
           use-kubelogin: 'true'
 
       - name: Setup kubectl
