@@ -104,11 +104,10 @@ jobs:
       - name: Helm tool installer
         uses: Azure/setup-helm@v2.0
       
-      # - name: Azure login
-      #   id: login
-      #   uses: azure/login@v1.4.3
-      #   with:
-      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Azure login
+        uses: azure/login@v1.4.3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
         
       - name: Azure Kubernetes set context
         uses: Azure/aks-set-context@v3
