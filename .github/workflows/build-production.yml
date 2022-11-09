@@ -138,7 +138,7 @@ jobs:
               Manifests/Networks/basket-net-networkpolicy.yaml
               Manifests/Networks/products-net-networkpolicy.yaml
               Manifests/Networks/rabbitMQnet-networkpolicy.yaml
-              Manifests/Networks/traefik-net-service-networkpolicy.yaml
+              Manifests/Networks/traefik-net-networkpolicy.yaml
 
       - name: Deploy MSSQL service to AKS
         uses: Azure/k8s-deploy@v4
