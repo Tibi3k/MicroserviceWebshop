@@ -6,7 +6,7 @@ metadata:
   name: basket-service-service
 spec:
   ports:
-    - name: "BasketService"
+    - name: "basketservice-port"
       port: 7000
       targetPort: 80
   type: LoadBalancer

@@ -40,5 +40,5 @@ spec:
         - image: basket-service
           name: basket-service
           resources: {}
-      hostname: BasketService
+      hostname: basketservice
       restartPolicy: Always
