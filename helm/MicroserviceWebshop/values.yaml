@@ -15,7 +15,7 @@ dependencies:
 basket-service:
   deployment:
     image: "basket-service"
-    registry: "mswcontainerregistry"
+    registry: "mswebshop"
     tag: "latest"
     containerPort: 80
 
