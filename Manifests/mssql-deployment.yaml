@@ -12,6 +12,9 @@ spec:
   strategy:
     type: Recreate
   template:
+    metadata:
+      labels:
+        io.kompose.service: mssql
     spec:
       containers:
         - env:
