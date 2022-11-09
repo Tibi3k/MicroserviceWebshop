@@ -12,8 +12,8 @@ spec:
   strategy:
     type: Recreate
   template:
-      labels:
-        io.kompose.service: mssql
+    labels:
+      io.kompose.service: mssql
     spec:
       containers:
         - env:
@@ -38,4 +38,3 @@ spec:
         - name: datafiles
           persistentVolumeClaim:
             claimName: datafiles
-status: {}
