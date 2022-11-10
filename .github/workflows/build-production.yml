@@ -235,8 +235,8 @@ jobs:
           namespace: 'default'
 
           manifests: |
-              Manifests/ProductService/email-service-deployment.yaml
-              Manifests/ProductService/email-service-service.yaml
+              Manifests/EmailService/email-service-deployment.yaml
+              Manifests/EmailService/email-service-service.yaml
           images: |
               ${{secrets.ACR_NAME}}/email-service:latest      
 
