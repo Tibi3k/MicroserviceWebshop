@@ -9,7 +9,7 @@ metadata:
   #   traefik.http.routers.auth-service.rule: Host(`localhost`) && Path(`/auth{any:.*}`)
   #   traefik.port: "6200"
   # creationTimestamp: null
-  # labels:
+  labels:
     io.kompose.service: auth-service
   name: auth-service
 spec:
