@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - image: rabbitmq:3.9-management
-          name: Rabbitmq
+          name: rabbitmq
           ports:
             - containerPort: 4369
             - containerPort: 5671

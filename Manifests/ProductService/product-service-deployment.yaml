@@ -53,5 +53,5 @@ spec:
           image: product-service
           name: product-service
           resources: {}
-      hostname: ProductService
+      hostname: productService
       restartPolicy: Always
