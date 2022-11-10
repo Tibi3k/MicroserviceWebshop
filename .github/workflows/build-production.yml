@@ -152,6 +152,17 @@ jobs:
           images: |
               mcr.microsoft.com/mssql/server:2019-latest
 
+      - name: Deploy MongoDB to AKS
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+
+          manifests: |
+              Manifests/MongoDB/mongodb-deployment.yaml
+              Manifests/MongoDB/mongoDB-service.yaml
+          images: |
+              mongo    
+
       - name: Deploy RabbitMQ to AKS
         uses: Azure/k8s-deploy@v4
         with:
@@ -206,3 +217,38 @@ jobs:
               Manifests/ProductService/product-service-service.yaml
           images: |
               ${{secrets.ACR_NAME}}/product-service:latest      
+
+      - name: Deploy AuthService to AKS
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+
+          manifests: |
+              Manifests/AuthService/auth-service-deployment.yaml
+              Manifests/AuthService/auth-service-service.yaml
+          images: |
+              ${{secrets.ACR_NAME}}/node-auth-service:latest      
+
+      - name: Deploy EmailService to AKS
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+
+          manifests: |
+              Manifests/ProductService/email-service-deployment.yaml
+              Manifests/ProductService/email-service-service.yaml
+          images: |
+              ${{secrets.ACR_NAME}}/email-service:latest      
+
+      - name: Deploy NginxService to AKS
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+
+          manifests: |
+              Manifests/NginxService/nginx-deployment.yaml
+              Manifests/NginxService/nginx-service.yaml
+          images: |
+              ${{secrets.ACR_NAME}}/nginx-frontend:latest      
+
+ 

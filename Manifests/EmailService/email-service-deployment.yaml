@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # annotations:
+  #   kompose.cmd: kompose convert
+  #   kompose.version: 1.26.1 (a9d05d509)
+  # creationTimestamp: null
+  labels:
+    io.kompose.service: email-service
+  name: email-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: email-service
+  strategy: {}
+  template:
+    metadata:
+      # annotations:
+      #   kompose.cmd: kompose convert
+      #   kompose.version: 1.26.1 (a9d05d509)
+      # creationTimestamp: null
+      labels:
+        #io.kompose.network/rabbitMQnet: "true"
+        io.kompose.service: email-service
+    spec:
+      containers:
+        - image: mswebshopregistry.azurecr.io/email-service:latest
+          name: emailservice
+          resources: {}
+      hostname: email-service
+      restartPolicy: Always

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: nginx-service-service
+  name: nginx-service-service
+spec:
+  ports:
+    - name: "nginxservice-port"
+      port: 8080
+      targetPort: 80
+  type: LoadBalancer
+  selector:
+    io.kompose.service: nginx-service-service
