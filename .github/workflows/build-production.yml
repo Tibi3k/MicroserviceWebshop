@@ -140,7 +140,7 @@ jobs:
               Manifests/Networks/rabbitMQnet-networkpolicy.yaml
               Manifests/Networks/traefik-net-networkpolicy.yaml
 
-      - name: Deploy MSSQL service to AKS
+      - name: Deploy MSSQL to AKS
         uses: Azure/k8s-deploy@v4
         with:
           namespace: 'default'
@@ -151,6 +151,17 @@ jobs:
               Manifests/MSSQL/mssql-service.yaml
           images: |
               mcr.microsoft.com/mssql/server:2019-latest
+
+      - name: Deploy RabbitMQ to AKS
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+
+          manifests: |
+              Manifests/RabbitMQService/rabbitmq-deployment.yaml
+              Manifests/RabbitMQService/RabbitMQ-service.yaml
+          images: |
+              rabbitmq:3.9-management
 
       - name: Deploy BasketService to AKS
         uses: Azure/k8s-deploy@v4
@@ -163,3 +174,35 @@ jobs:
           images: |
               ${{secrets.ACR_NAME}}/basket-service:latest
       
+      - name: Deploy OrderService to AKS
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+
+          manifests: |
+              Manifests/OrderService/order-service-deployment.yaml
+              Manifests/OrderService/order-service-service.yaml
+          images: |
+              ${{secrets.ACR_NAME}}/order-service:latest
+
+      - name: Deploy PaymentService to AKS
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+
+          manifests: |
+              Manifests/PaymentService/payment-service-deployment.yaml
+              Manifests/PaymentService/payment-service-service.yaml
+          images: |
+              ${{secrets.ACR_NAME}}/payment-service:latest
+
+      - name: Deploy ProductService to AKS
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+
+          manifests: |
+              Manifests/ProductService/product-service-deployment.yaml
+              Manifests/ProductService/product-service-service.yaml
+          images: |
+              ${{secrets.ACR_NAME}}/product-service:latest      
