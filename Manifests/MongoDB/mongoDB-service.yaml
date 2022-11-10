@@ -7,7 +7,7 @@ metadata:
   # creationTimestamp: null
   labels:
     io.kompose.service: mongodb
-  name: mongoDB
+  name: mongodb
 spec:
   ports:
     - name: "27017"
