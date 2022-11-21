@@ -26,7 +26,7 @@ appVersion: "1.16.0"
 dependencies:
   - name: basket-service
     version: 0.1.6
-    condition: dependencies.gamelogic.enabled
+    condition: dependencies.basket-service.enabled
     repository: file://../BasketService
   - name: traefik
     version: 10.19.5
