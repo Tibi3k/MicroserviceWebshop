@@ -1,7 +1,7 @@
 name: avalon-ingress
 
 services:
-  basket-service:
+  basket_service:
     name: basket-service
     port: 80
     prefix: /basket
