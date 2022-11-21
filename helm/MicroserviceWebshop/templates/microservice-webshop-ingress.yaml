@@ -7,10 +7,10 @@ spec:
   rules:
     - http:
         paths:
-          - path: {{.Values.services.basket_service.prefix}}
+          - path: {{.Values.services.basket-service.prefix}}
             pathType: Prefix
             basket-service:
               service:
-                name: {{.Values.services.basket_service.name}}
+                name: {{.Values.services.basket-service.name}}
                 port:
-                  number: {{.Values.services.basket_service.port}}
+                  number: {{.Values.services.basket-service.port}}
