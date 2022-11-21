@@ -9,7 +9,7 @@ spec:
         paths:
           - path: {{.Values.services.basket_service.prefix}}
             pathType: Prefix
-            basket-service:
+            backend:
               service:
                 name: {{.Values.services.basket_service.name}}
                 port:
