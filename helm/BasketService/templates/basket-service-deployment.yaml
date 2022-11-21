@@ -12,9 +12,7 @@ spec:
       app: {{ .Values.name }}
   template:
     metadata:
-      # annotations: 
-      #   checksum/config: {{ include (print $.Template.BasePath "/mongo-config-map.yaml") . | sha256sum}}
-      labels:
+     labels:
         app: {{ .Values.name }}
     spec:
       containers:
@@ -22,12 +20,7 @@ spec:
           image: {{.Values.deployment.registry}}/{{.Values.deployment.image}}:{{ .Values.deployment.tag }}
           ports:
             - containerPort: {{ .Values.deployment.containerPort}}
-          # env:
-          #   - name: CONNECTION_STRING
-          #     valueFrom:
-          #       configMapKeyRef:
-          #         name: mongodb-configmap
-          #         key: database_url
+
 
 ---
 apiVersion: v1
@@ -38,7 +31,6 @@ metadata:
 spec:
   selector:
     app: {{ .Values.name }}
-#  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 80
