@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
         #TODO fix hogy ne legyen statikus
-        - image: mswebshopregistry.azurecr.io/basket-service:latest
+        - image: mswsregistry.azurecr.io/basket-service:latest
           name: basket-service
           resources: {}
       hostname: basketservice

@@ -41,7 +41,7 @@ spec:
         io.kompose.service: order-service
     spec:
       containers:
-        - image: mswebshopregistry.azurecr.io/order-service:latest
+        - image: mswsregistry.azurecr.io/order-service:latest
           name: order-service
           resources: {}
       restartPolicy: Always

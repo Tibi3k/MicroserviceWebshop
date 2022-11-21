@@ -50,7 +50,7 @@ spec:
               value: Development
             - name: DBHOST
               value: mssql
-          image: mswebshopregistry.azurecr.io/product-service:latest
+          image: mswsregistry.azurecr.io/product-service:latest
           name: product-service
           resources: {}
       hostname: product-service

@@ -41,7 +41,7 @@ spec:
         io.kompose.service: payment-service
     spec:
       containers:
-        - image: mswebshopregistry.azurecr.io/payment-service:latest
+        - image: mswsregistry.azurecr.io/payment-service:latest
           name: payment-service
           resources: {}
       restartPolicy: Always

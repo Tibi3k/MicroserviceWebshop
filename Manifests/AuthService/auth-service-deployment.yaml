@@ -33,7 +33,7 @@ spec:
         io.kompose.service: auth-service
     spec:
       containers:
-        - image: mswebshopregistry.azurecr.io/node-auth-service:latest
+        - image: mswsregistry.azurecr.io/node-auth-service:latest
           name: auth-service
           resources: {}
       restartPolicy: Always

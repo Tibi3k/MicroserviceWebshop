@@ -25,7 +25,7 @@ spec:
         io.kompose.service: email-service
     spec:
       containers:
-        - image: mswebshopregistry.azurecr.io/email-service:latest
+        - image: mswsregistry.azurecr.io/email-service:latest
           name: emailservice
           resources: {}
       hostname: email-service

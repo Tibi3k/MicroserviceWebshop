@@ -37,7 +37,7 @@ spec:
         io.kompose.service: nginx
     spec:
       containers:
-        - image: mswebshopregistry.azurecr.io/nginx-frontend:latest
+        - image: mswsregistry.azurecr.io/nginx-frontend:latest
           name: angularnginx
           resources: {}
       restartPolicy: Always
