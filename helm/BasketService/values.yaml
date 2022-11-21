@@ -5,6 +5,3 @@ deployment:
   containerPort: 80
 
 name: "basket-service"
-
-database:
-  url: my-mongodb-svc.mongodb
