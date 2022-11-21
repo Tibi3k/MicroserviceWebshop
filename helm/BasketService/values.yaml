@@ -1,6 +1,6 @@
 deployment:
   image: "basket-service"
-  registry: "mswebshop"
+  registry: "mswsregistry.azurecr.io"
   tag: "latest"
   containerPort: 80
 

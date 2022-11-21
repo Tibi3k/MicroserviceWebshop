@@ -38,61 +38,61 @@ jobs:
           password: ${{ secrets.ACR_PASSWORD }}
 
 
-      - name: Build and push basket-service
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./BasketService/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/basket-service:latest
-          push: true
+      # - name: Build and push basket-service
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./BasketService/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/basket-service:latest
+      #     push: true
           
-      - name: Build and push email-service
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./EmailService/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/email-service:latest
-          push: true
+      # - name: Build and push email-service
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./EmailService/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/email-service:latest
+      #     push: true
 
-      - name: Build and push order-service
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./OrderService/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/order-service:latest
-          push: true
+      # - name: Build and push order-service
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./OrderService/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/order-service:latest
+      #     push: true
 
-      - name: Build and push payment-service
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./PaymentService/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/payment-service:latest
-          push: true
+      # - name: Build and push payment-service
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./PaymentService/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/payment-service:latest
+      #     push: true
 
-      - name: Build and push product-service
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./ProductService/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/product-service:latest
-          push: true
+      # - name: Build and push product-service
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./ProductService/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/product-service:latest
+      #     push: true
 
-      - name: Build and push node-auth-service
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./NodeAuthService/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/node-auth-service:latest
-          push: true
+      # - name: Build and push node-auth-service
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./NodeAuthService/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/node-auth-service:latest
+      #     push: true
 
-      - name: Build and push nginx-frontend
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./MicroserviceFrontend/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/nginx-frontend:latest
-          push: true
+      # - name: Build and push nginx-frontend
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./MicroserviceFrontend/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/nginx-frontend:latest
+      #     push: true
 
   deploy:
     runs-on: ubuntu-latest   
@@ -129,126 +129,146 @@ jobs:
         id: install-kubectl
         uses: azure/setup-kubectl@v3
         
-      - name: Deploy Networks to AKS
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'default'
-
-          manifests: |
-              Manifests/Networks/basket-net-networkpolicy.yaml
-              Manifests/Networks/products-net-networkpolicy.yaml
-              Manifests/Networks/rabbitMQnet-networkpolicy.yaml
-              Manifests/Networks/traefik-net-networkpolicy.yaml
-
-      - name: Deploy MSSQL to AKS
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'default'
-
-          manifests: |
-              Manifests/MSSQL/datafiles-persistentvolumeclaim.yaml
-              Manifests/MSSQL/mssql-deployment.yaml
-              Manifests/MSSQL/mssql-service.yaml
-          images: |
-              mcr.microsoft.com/mssql/server:2019-latest
-
-      - name: Deploy MongoDB to AKS
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'default'
-
-          manifests: |
-              Manifests/MongoDB/mongodb-deployment.yaml
-              Manifests/MongoDB/mongoDB-service.yaml
-          images: |
-              mongo    
-
-      - name: Deploy RabbitMQ to AKS
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'default'
-
-          manifests: |
-              Manifests/RabbitMQService/rabbitmq-deployment.yaml
-              Manifests/RabbitMQService/RabbitMQ-service.yaml
-          images: |
-              rabbitmq:3.9-management
-
-      - name: Deploy BasketService to AKS
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'default'
-
-          manifests: |
-              Manifests/BasketService/basket-service-deployment.yaml
-              Manifests/BasketService/basket-service-service.yaml
-          images: |
-              ${{secrets.ACR_NAME}}/basket-service:latest
+      - name: Helm dependency build
+        run: |
+         cd ./helm/MicroserviceWebshop ;
+         helm dependency build 
+        
+      - name: Helm deploy
+        run: |
+         cd ./helm/MicroserviceWebshop ;
+         helm upgrade \
+            --install \
+            --create-namespace \
+            --namespace production \
+            MsWebshop \
+            . \
+            --set basket-service.deployment.registry=mswsregistry.azurecr.io \
+            --set basket-service.deployment.image=basket-service \
+            --set basket-service.deployment.tag=latest \
+#            --atomic \
+#            --wait \
       
-      - name: Deploy OrderService to AKS
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'default'
+      # - name: Deploy Networks to AKS
+      #   uses: Azure/k8s-deploy@v4
+      #   with:
+      #     namespace: 'default'
 
-          manifests: |
-              Manifests/OrderService/order-service-deployment.yaml
-              Manifests/OrderService/order-service-service.yaml
-          images: |
-              ${{secrets.ACR_NAME}}/order-service:latest
+      #     manifests: |
+      #         Manifests/Networks/basket-net-networkpolicy.yaml
+      #         Manifests/Networks/products-net-networkpolicy.yaml
+      #         Manifests/Networks/rabbitMQnet-networkpolicy.yaml
+      #         Manifests/Networks/traefik-net-networkpolicy.yaml
 
-      - name: Deploy PaymentService to AKS
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'default'
+      # - name: Deploy MSSQL to AKS
+      #   uses: Azure/k8s-deploy@v4
+      #   with:
+      #     namespace: 'default'
 
-          manifests: |
-              Manifests/PaymentService/payment-service-deployment.yaml
-              Manifests/PaymentService/payment-service-service.yaml
-          images: |
-              ${{secrets.ACR_NAME}}/payment-service:latest
+      #     manifests: |
+      #         Manifests/MSSQL/datafiles-persistentvolumeclaim.yaml
+      #         Manifests/MSSQL/mssql-deployment.yaml
+      #         Manifests/MSSQL/mssql-service.yaml
+      #     images: |
+      #         mcr.microsoft.com/mssql/server:2019-latest
 
-      - name: Deploy ProductService to AKS
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'default'
+      # - name: Deploy MongoDB to AKS
+      #   uses: Azure/k8s-deploy@v4
+      #   with:
+      #     namespace: 'default'
 
-          manifests: |
-              Manifests/ProductService/product-service-deployment.yaml
-              Manifests/ProductService/product-service-service.yaml
-          images: |
-              ${{secrets.ACR_NAME}}/product-service:latest      
+      #     manifests: |
+      #         Manifests/MongoDB/mongodb-deployment.yaml
+      #         Manifests/MongoDB/mongoDB-service.yaml
+      #     images: |
+      #         mongo    
 
-      - name: Deploy AuthService to AKS
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'default'
+      # - name: Deploy RabbitMQ to AKS
+      #   uses: Azure/k8s-deploy@v4
+      #   with:
+      #     namespace: 'default'
 
-          manifests: |
-              Manifests/AuthService/auth-service-deployment.yaml
-              Manifests/AuthService/auth-service-service.yaml
-          images: |
-              ${{secrets.ACR_NAME}}/node-auth-service:latest      
+      #     manifests: |
+      #         Manifests/RabbitMQService/rabbitmq-deployment.yaml
+      #         Manifests/RabbitMQService/RabbitMQ-service.yaml
+      #     images: |
+      #         rabbitmq:3.9-management
 
-      - name: Deploy EmailService to AKS
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'default'
+      # - name: Deploy BasketService to AKS
+      #   uses: Azure/k8s-deploy@v4
+      #   with:
+      #     namespace: 'default'
 
-          manifests: |
-              Manifests/EmailService/email-service-deployment.yaml
-              Manifests/EmailService/email-service-service.yaml
-          images: |
-              ${{secrets.ACR_NAME}}/email-service:latest      
+      #     manifests: |
+      #         Manifests/BasketService/basket-service-deployment.yaml
+      #         Manifests/BasketService/basket-service-service.yaml
+      #     images: |
+      #         ${{secrets.ACR_NAME}}/basket-service:latest
+      
+      # - name: Deploy OrderService to AKS
+      #   uses: Azure/k8s-deploy@v4
+      #   with:
+      #     namespace: 'default'
 
-      - name: Deploy NginxService to AKS
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: 'default'
+      #     manifests: |
+      #         Manifests/OrderService/order-service-deployment.yaml
+      #         Manifests/OrderService/order-service-service.yaml
+      #     images: |
+      #         ${{secrets.ACR_NAME}}/order-service:latest
 
-          manifests: |
-              Manifests/NginxService/nginx-deployment.yaml
-              Manifests/NginxService/nginx-service.yaml
-          images: |
-              ${{secrets.ACR_NAME}}/nginx-frontend:latest      
+      # - name: Deploy PaymentService to AKS
+      #   uses: Azure/k8s-deploy@v4
+      #   with:
+      #     namespace: 'default'
+
+      #     manifests: |
+      #         Manifests/PaymentService/payment-service-deployment.yaml
+      #         Manifests/PaymentService/payment-service-service.yaml
+      #     images: |
+      #         ${{secrets.ACR_NAME}}/payment-service:latest
+
+      # - name: Deploy ProductService to AKS
+      #   uses: Azure/k8s-deploy@v4
+      #   with:
+      #     namespace: 'default'
+
+      #     manifests: |
+      #         Manifests/ProductService/product-service-deployment.yaml
+      #         Manifests/ProductService/product-service-service.yaml
+      #     images: |
+      #         ${{secrets.ACR_NAME}}/product-service:latest      
+
+      # - name: Deploy AuthService to AKS
+      #   uses: Azure/k8s-deploy@v4
+      #   with:
+      #     namespace: 'default'
+
+      #     manifests: |
+      #         Manifests/AuthService/auth-service-deployment.yaml
+      #         Manifests/AuthService/auth-service-service.yaml
+      #     images: |
+      #         ${{secrets.ACR_NAME}}/node-auth-service:latest      
+
+      # - name: Deploy EmailService to AKS
+      #   uses: Azure/k8s-deploy@v4
+      #   with:
+      #     namespace: 'default'
+
+      #     manifests: |
+      #         Manifests/EmailService/email-service-deployment.yaml
+      #         Manifests/EmailService/email-service-service.yaml
+      #     images: |
+      #         ${{secrets.ACR_NAME}}/email-service:latest      
+
+      # - name: Deploy NginxService to AKS
+      #   uses: Azure/k8s-deploy@v4
+      #   with:
+      #     namespace: 'default'
+
+      #     manifests: |
+      #         Manifests/NginxService/nginx-deployment.yaml
+      #         Manifests/NginxService/nginx-service.yaml
+      #     images: |
+      #         ${{secrets.ACR_NAME}}/nginx-frontend:latest      
 
  

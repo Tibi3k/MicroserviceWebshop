@@ -7,20 +7,10 @@ spec:
   rules:
     - http:
         paths:
-          - path: {{.Values.services.email_service.prefix}}
+          - path: {{.Values.services.basket_service.prefix}}
             pathType: Prefix
-            backend:
+            basket-service:
               service:
-                name: {{.Values.services.email_service.name}}
+                name: {{.Values.services.basket_service.name}}
                 port:
-                  number: {{.Values.services.email_service.port}}
-
-    - http:
-        paths:
-          - path: {{.Values.services.gamelogic_service.prefix}}
-            pathType: Prefix
-            backend:
-              service:
-                name: {{.Values.services.gamelogic_service.name}}
-                port:
-                  number: {{.Values.services.gamelogic_service.port}}
+                  number: {{.Values.services.basket_service.port}}
