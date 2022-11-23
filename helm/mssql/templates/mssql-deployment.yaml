@@ -24,22 +24,20 @@ spec:
               value: Asdf1234
           volumeMounts:
             - mountPath: /var/lib/mysql
-              name: datafiles
+              name: mssql-data
           image: {{ .Values.deployment.image}}
           ports:
             - containerPort: {{ .Values.deployment.containerPort}}
       volumes:
-        - name: datafiles
+        - name: mssql-data
           persistentVolumeClaim:
-            claimName: datafiles
+            claimName: mssql-data
 
 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  labels:
-    io.kompose.service: datafiles
-  name: datafiles
+  name: mssql-data
 spec:
   accessModes:
     - ReadWriteOnce
