@@ -1,10 +1,13 @@
 name: avalon-ingress
 
 services:
+  mssql:
+    name: mssql
+    port: 2666
   basket_service:
     name: basket-service
     port: 80
-    prefix: /basket
+    prefix: /api/basket
   nginx_frontend:
     name: nginx-frontend
     port: 80
@@ -15,6 +18,8 @@ services:
     prefix: /products
 
 dependencies:
+  mssql:
+    endabled: true
   basket-service:
     enabled: true
   nginx-frontend:
@@ -48,6 +53,11 @@ product-service:
     containerPort: 80
   name: "product-service"
 
+mssql:
+  deployment:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    containerPort: 1433
+  name: "mssql"
 
   # database:
   #   url: mongodb://user1:user123@mongodb-svc.mongodb/Archimedes-Rest?readPreference=primaryPreferred
