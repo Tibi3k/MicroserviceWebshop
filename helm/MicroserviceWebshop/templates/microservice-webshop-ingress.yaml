@@ -26,35 +26,35 @@ spec:
                 name: {{.Values.services.nginx_frontend.name}}
                 port:
                   number: {{.Values.services.nginx_frontend.port}}
-          - path: {{.Values.services.nginx_frontend.prefix-basket}}
+          - path: {{.Values.services.nginx_frontend.prefix_basket}}
             pathType: Exact
             backend:
               service:
                 name: {{.Values.services.nginx_frontend.name}}
                 port:
                   number: {{.Values.services.nginx_frontend.port}}
-          - path: {{.Values.services.nginx_frontend.prefix-orders}}
+          - path: {{.Values.services.nginx_frontend.prefix_orders}}
             pathType: Exact
             backend:
               service:
                 name: {{.Values.services.nginx_frontend.name}}
                 port:
                   number: {{.Values.services.nginx_frontend.port}}
-          - path: {{.Values.services.nginx_frontend.prefix-create-product}}
+          - path: {{.Values.services.nginx_frontend.prefix_create_product}}
             pathType: Exact
             backend:
               service:
                 name: {{.Values.services.nginx_frontend.name}}
                 port:
                   number: {{.Values.services.nginx_frontend.port}}
-          - path: {{.Values.services.nginx_frontend.prefix-create-category}}
+          - path: {{.Values.services.nginx_frontend.prefix_create_category}}
             pathType: Exact
             backend:
               service:
                 name: {{.Values.services.nginx_frontend.name}}
                 port:
                   number: {{.Values.services.nginx_frontend.port}}
-          - path: {{.Values.services.nginx_frontend.prefix-edit}}
+          - path: {{.Values.services.nginx_frontend.prefix_edit}}
             pathType: Prefix
             backend:
               service:
@@ -69,7 +69,7 @@ spec:
                 name: {{.Values.services.product_service.name}}
                 port:
                   number: {{.Values.services.product_service.port}}
-          - path: {{.Values.services.product_service.prefix-public}}
+          - path: {{.Values.services.product_service.prefix_public}}
             pathType: Prefix
             backend:
               service:
@@ -83,7 +83,7 @@ spec:
                 name: {{.Values.services.category_service.name}}
                 port:
                   number: {{.Values.services.category_service.port}}
-          - path: {{.Values.services.category_service.prefix-public}}
+          - path: {{.Values.services.category_service.prefix_public}}
             pathType: Prefix
             backend:
               service:

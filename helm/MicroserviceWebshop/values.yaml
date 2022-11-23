@@ -15,22 +15,22 @@ services:
     name: nginx-frontend
     port: 80
     prefix: /
-    prefix-basket: /basket
-    prefix-orders: /orders
-    prefix-create-product: /createproduct
-    prefix-create-category: /createcategory
-    prefix-edit: /edit
+    prefix_basket: /basket
+    prefix_orders: /orders
+    prefix_create_product: /createproduct
+    prefix_create_category: /createcategory
+    prefix_edit: /edit
 
   product_service:
     name: product-service
     port: 80
     prefix: /api/products/protected
-    prefix-public: /api/products/public
+    prefix_public: /api/products/public
   category_service:
     name: product-service
     port: 80
     prefix: /api/categories/create
-    prefix-public: /api/categories/get  
+    prefix_public: /api/categories/get  
 
 dependencies:
   mssql:
