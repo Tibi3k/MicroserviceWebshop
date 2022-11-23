@@ -28,10 +28,6 @@ spec:
           image: {{ .Values.deployment.image}}
           ports:
             - containerPort: {{ .Values.deployment.containerPort}}
-      volumes:
-        - name: mssql-data
-          persistentVolumeClaim:
-            claimName: mssql-data
 
 
 apiVersion: v1
