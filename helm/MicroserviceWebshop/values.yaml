@@ -9,11 +9,17 @@ services:
     name: nginx-frontend
     port: 80
     prefix: /
+  nginx_frontend:
+    name: product-service
+    port: 80
+    prefix: /products
 
 dependencies:
   basket-service:
     enabled: true
   nginx-frontend:
+    enabled: true
+  product-service:
     enabled: true
   traefik:
     enabled: true
@@ -33,6 +39,15 @@ nginx-frontend:
     tag: "latest"
     containerPort: 80
   name: "nginx-frontend"
+
+product-service:
+  deployment:
+    image: "product-service"
+    registry: "mswsregistry.azurecr.io"
+    tag: "latest"
+    containerPort: 80
+  name: "product-service"
+
 
   # database:
   #   url: mongodb://user1:user123@mongodb-svc.mongodb/Archimedes-Rest?readPreference=primaryPreferred

@@ -23,3 +23,12 @@ spec:
                 name: {{.Values.services.nginx_frontend.name}}
                 port:
                   number: {{.Values.services.nginx_frontend.port}}
+    - http:
+        paths:
+          - path: {{.Values.services.product_service.prefix}}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.product_service.name}}
+                port:
+                  number: {{.Values.services.product_service.port}}

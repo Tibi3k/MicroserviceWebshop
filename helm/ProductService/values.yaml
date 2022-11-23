@@ -1,0 +1,7 @@
+deployment:
+  image: "product-service"
+  registry: "mswsregistry.azurecr.io"
+  tag: "latest"
+  containerPort: 80
+
+name: "product-service"
