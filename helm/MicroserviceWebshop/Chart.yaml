@@ -32,6 +32,10 @@ dependencies:
     version: 0.1.6
     condition: dependencies.nginx-frontend.enabled
     repository: file://../MicroserviceFrontend
+  - name: product-service
+    version: 0.1.6
+    condition: dependencies.product-service.enabled
+    repository: file://../ProductService
   - name: traefik
     version: 10.19.5
     condition: dependencies.traefik.enabled
