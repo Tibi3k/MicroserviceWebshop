@@ -2,6 +2,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mssql-data
+  namespace: {{ default "staging" .Release.Namespace }}
+  labels:
+    app: {{ .Values.name }}
 spec:
   accessModes:
     - ReadWriteOnce
@@ -39,7 +42,10 @@ spec:
           image: {{ .Values.deployment.image}}
           ports:
             - containerPort: {{ .Values.deployment.containerPort}}
-
+      volumes:
+        - name: mssql-data
+          persistentVolumeClaim:
+            claimName: mssql-data
 
 ---
 apiVersion: v1
