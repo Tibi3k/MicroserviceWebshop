@@ -25,7 +25,7 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: datafiles
-          image: {{ .Values.image}}
+          image: {{ .Values.deployment.image}}
           ports:
             - containerPort: {{ .Values.deployment.containerPort}}
       volumes:
