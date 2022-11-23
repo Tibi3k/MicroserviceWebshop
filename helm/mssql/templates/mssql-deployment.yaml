@@ -24,22 +24,22 @@ spec:
               value: Asdf1234
           volumeMounts:
             - mountPath: /var/lib/mysql
-              name: mssql-data
+              name: mssql-localdata
           image: {{ .Values.deployment.image}}
           ports:
             - containerPort: {{ .Values.deployment.containerPort}}
 
 
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mssql-data
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Mi
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: mssql-data
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 100Mi
 
 
 ---
