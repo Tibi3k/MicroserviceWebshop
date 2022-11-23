@@ -14,8 +14,6 @@ spec:
                 name: {{.Values.services.basket_service.name}}
                 port:
                   number: {{.Values.services.basket_service.port}}
-    - http:
-        paths:
           - path: {{.Values.services.nginx_frontend.prefix}}
             pathType: Prefix
             backend:
@@ -23,8 +21,29 @@ spec:
                 name: {{.Values.services.nginx_frontend.name}}
                 port:
                   number: {{.Values.services.nginx_frontend.port}}
-    - http:
+          - path: {{.Values.services.product_service.prefix}}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.product_service.name}}
+                port:
+                  number: {{.Values.services.product_service.port}}
+    - https:
         paths:
+          - path: {{.Values.services.basket_service.prefix}}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.basket_service.name}}
+                port:
+                  number: {{.Values.services.basket_service.port}}
+          - path: {{.Values.services.nginx_frontend.prefix}}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.nginx_frontend.name}}
+                port:
+                  number: {{.Values.services.nginx_frontend.port}}
           - path: {{.Values.services.product_service.prefix}}
             pathType: Prefix
             backend:
