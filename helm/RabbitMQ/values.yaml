@@ -1,0 +1,5 @@
+deployment:
+  image: "rabbitmq:3.9-management"
+  containerPort: 5672
+
+name: "rabbitmq"

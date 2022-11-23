@@ -111,13 +111,13 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
   // protectedResourceMap.set('https://graph.microsoft.com/v1.0/me', ['user.read']); // Prod environment. Uncomment to use.
-  protectedResourceMap.set('http://localhost/api/products/public', []);
-  protectedResourceMap.set('http://localhost/api/categories/get', []);
-  protectedResourceMap.set('http://localhost/api/products/protected', [environment.scopeUrl]);
-  protectedResourceMap.set('http://localhost/api/categories/create', [environment.scopeUrl]);
-  protectedResourceMap.set('http://localhost/api/basket/', [environment.scopeUrl]);
-  protectedResourceMap.set('http://localhost/api/orders/', [environment.scopeUrl]);
-  protectedResourceMap.set('http://localhost/api/payment/', [environment.scopeUrl]);
+  protectedResourceMap.set('https://20.238.248.85/api/products/public', []);
+  protectedResourceMap.set('https://20.238.248.85/api/categories/get', []);
+  protectedResourceMap.set('https://20.238.248.85/api/products/protected', [environment.scopeUrl]);
+  protectedResourceMap.set('https://20.238.248.85/api/categories/create', [environment.scopeUrl]);
+  protectedResourceMap.set('https://20.238.248.85/api/basket/', [environment.scopeUrl]);
+  protectedResourceMap.set('https://20.238.248.85/api/orders/', [environment.scopeUrl]);
+  protectedResourceMap.set('https://20.238.248.85/api/payment/', [environment.scopeUrl]);
 
   return {
     interactionType: InteractionType.Popup,
