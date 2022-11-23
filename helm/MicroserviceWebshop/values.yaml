@@ -21,7 +21,7 @@ dependencies:
 basket-service:
   deployment:
     image: "basket-service"
-    registry: "mswsregistry"
+    registry: "mswsregistry.azurecr.io"
     tag: "latest"
     containerPort: 80
   name: "basket"
@@ -29,7 +29,7 @@ basket-service:
 nginx-frontend:
   deployment:
     image: "nginx-frontend"
-    registry: "mswsregistry"
+    registry: "mswsregistry.azurecr.io"
     tag: "latest"
     containerPort: 80
   name: "nginx-frontend"
