@@ -1,0 +1,7 @@
+deployment:
+  image: "node-auth-service"
+  registry: "mswsregistry.azurecr.io"
+  tag: "latest"
+  containerPort: 6200
+
+name: "node-auth-service"

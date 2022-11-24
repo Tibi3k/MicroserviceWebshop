@@ -33,6 +33,8 @@ services:
     prefix_public: /api/categories/get  
 
 dependencies:
+  node-auth-service:
+    endabled: true
   mssql:
     endabled: true
   rabbitmq:
@@ -81,6 +83,14 @@ mssql:
     image: "mcr.microsoft.com/mssql/server:2019-latest"
     containerPort: 1433
   name: "mssql"
+
+node-auth-service:
+  deployment:
+    image: "node-auth-service"
+    registry: "mswsregistry.azurecr.io"
+    tag: "latest"
+    containerPort: 6200
+  name: "node-auth-service"
 
   # database:
   #   url: mongodb://user1:user123@mongodb-svc.mongodb/Archimedes-Rest?readPreference=primaryPreferred

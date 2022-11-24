@@ -1,0 +1,46 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: forward-auth-ingress
+  namespace: production #?
+spec:
+  entryPoints: # [1]
+    - websecure
+  routes: # [2]
+    - kind: Rule
+      match: Path(`/`, `/{jscss:.*(.css|.js)}`, `/basket`, `/orders`, `/createproduct`, `/createcategory`, `/edit{edit:.*}`)"
+      services: # [8]
+        - kind: Service
+          name: nginx-frontend
+          namespace: production
+          port: 80 # [9]
+
+    - kind: Rule
+      match: Path(`/api/products/public{any11:.*}`, `/api/categories/get{any12:.*}`)"
+      services: # [8]
+        - kind: Service
+          name: product-service
+          namespace: production
+          port: 80 # [9]
+
+    - kind: Rule
+      match: Path(`/api/products/protected{any:.*}`, `/api/categories/create{any2:.*}`)"
+      middlewares: # [5]
+        - name: forward-auth # [6]
+          namespace: production # [7]
+      services: # [8]
+        - kind: Service
+          name: product-service
+          namespace: production
+          port: 80 # [9]
+
+    - kind: Rule
+      match: Path(`/api/basket{any:.*}`)"
+      middlewares: # [5]
+        - name: forward-auth # [6]
+          namespace: production # [7]
+      services: # [8]
+        - kind: Service
+          name: basket-service
+          namespace: production
+          port: 80 # [9]
