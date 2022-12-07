@@ -25,9 +25,9 @@ spec:
 
     - kind: Rule
       match: PathPrefix(`/api/products/protected`) || PathPrefix(`/api/categories/create`)
-      middlewares: # [5]
-        - name: forward-auth # [6]
-          namespace: production # [7]
+      # middlewares: # [5]
+      #   - name: forward-auth # [6]
+      #     namespace: production # [7]
       services: # [8]
         - kind: Service
           name: product-service
