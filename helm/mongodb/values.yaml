@@ -1,5 +1,5 @@
 deployment:
-  image: "mongod"
+  image: "mongo"
   containerPort: 27017
 
 name: "mongodb"
