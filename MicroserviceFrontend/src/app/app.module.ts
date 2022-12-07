@@ -51,28 +51,11 @@ import { NgxPayPalModule } from 'ngx-paypal';
     {provide: HTTP_INTERCEPTORS, useClass: AuthorizationInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     AuthGuard,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: MsalInterceptor,
-      multi: true
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: ErrorInterceptor,
-      multi: true
-    },
-    {
-      provide: MSAL_INSTANCE,
-      useFactory: MSALInstanceFactory
-    },
-    {
-      provide: MSAL_GUARD_CONFIG,
-      useFactory: MSALGuardConfigFactory
-    },
-    {
-      provide: MSAL_INTERCEPTOR_CONFIG,
-      useFactory: MSALInterceptorConfigFactory
-    },
+    {provide: HTTP_INTERCEPTORS, useClass: MsalInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+    {provide: MSAL_INSTANCE, useFactory: MSALInstanceFactory},
+    {provide: MSAL_GUARD_CONFIG, useFactory: MSALGuardConfigFactory},
+    {provide: MSAL_INTERCEPTOR_CONFIG, useFactory: MSALInterceptorConfigFactory},
     MsalService,
     MsalGuard,
     MsalBroadcastService

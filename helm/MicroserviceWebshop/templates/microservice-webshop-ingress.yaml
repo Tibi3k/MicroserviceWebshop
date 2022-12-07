@@ -12,6 +12,13 @@ spec:
   rules:
     - http:
         paths:
+          - path: /dashboard
+            pathType: Prefix
+            backend:
+              service:
+                name: traefik
+                port:
+                  number: 8080
           - path: {{.Values.services.basket_service.prefix}}
             pathType: Prefix
             backend:

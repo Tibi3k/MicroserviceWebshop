@@ -92,5 +92,8 @@ node-auth-service:
     containerPort: 6200
   name: "node-auth-service"
 
+traefik:
+  name: traefik
+
   # database:
   #   url: mongodb://user1:user123@mongodb-svc.mongodb/Archimedes-Rest?readPreference=primaryPreferred

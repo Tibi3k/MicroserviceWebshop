@@ -33,7 +33,6 @@ namespace ProductService.Services
                 //Timeout
                 return false;
             }
-
         }
 
         public class ProductQuantityRestoreConsumer : IConsumer<IQuantityTransfer>
