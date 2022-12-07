@@ -11,13 +11,6 @@ spec:
   rules:
     - http:
         paths:
-          - path: /dashboard
-            pathType: Prefix
-            backend:
-              service:
-                name: traefik
-                port:
-                  number: 8080
           - path: {{.Values.services.basket_service.prefix}}
             pathType: Prefix
             backend:
@@ -32,6 +25,13 @@ spec:
                 name: {{.Values.services.order_service.name}}
                 port:
                   number: {{.Values.services.order_service.port}}
+          - path: {{.Values.services.payment_service.prefix}}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.payment_service.name}}
+                port:
+                  number: {{.Values.services.payment_service.port}}
           #product paths     
           - path: {{.Values.services.category_service.prefix}}
             pathType: Prefix
@@ -40,3 +40,10 @@ spec:
                 name: {{.Values.services.category_service.name}}
                 port:
                   number: {{.Values.services.category_service.port}}
+          - path: {{.Values.services.product_service.prefix}}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.product_service.name}}
+                port:
+                  number: {{.Values.services.product_service.port}}

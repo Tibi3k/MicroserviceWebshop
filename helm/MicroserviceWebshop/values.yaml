@@ -120,6 +120,3 @@ payment-service:
 
 traefik:
   name: traefik
-
-  # database:
-  #   url: mongodb://user1:user123@mongodb-svc.mongodb/Archimedes-Rest?readPreference=primaryPreferred
