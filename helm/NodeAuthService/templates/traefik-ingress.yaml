@@ -35,7 +35,7 @@
 #         - kind: Service
 #           name: product-service
 #           namespace: production
-          port: 80 # [9]
+#          port: 80 # [9]
 
     # - kind: Rule
     #   match: Path(`/api/basket{any:.*}`)
