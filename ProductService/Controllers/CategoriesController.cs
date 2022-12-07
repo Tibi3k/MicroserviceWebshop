@@ -29,7 +29,9 @@ namespace ProductService.Controllers
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Category>> CreateCategory([FromBody] string name) {
+            Console.WriteLine("Category create");
             var role = decodeUserData("jobTitle");
+            Console.WriteLine(role);
             if (role != "Admin")
                 return Unauthorized();
             var result = await this.repository.AddCategory(name);
@@ -38,8 +40,10 @@ namespace ProductService.Controllers
 
         private string decodeUserData(string data)
         {
+            Console.WriteLine(Request.Headers[data]);
             Console.WriteLine("res:" + Request.Headers[data]);
             var encodedUserData = Request.Headers[data].ToString() ?? "";
+            Console.WriteLine(encodedUserData);
             return Encoding.UTF8.GetString(Convert.FromBase64String(encodedUserData));
         }
     }
