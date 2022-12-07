@@ -1,40 +1,40 @@
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: forward-auth-ingress
-  namespace: production #?
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
-spec:
-  entryPoints: # [1]
-    - websecure
-  routes: # [2]
-    - kind: Rule
-      match: Path(`/`) || Path(`/{jscss:.*(.css|.js)}`) || Path(`/basket`) || Path(`/orders`) || Path(`/createproduct`) || Path(`/createcategory`) || Path(`/edit{edit:.*}`)
-      services: # [8]
-        - kind: Service
-          name: nginx-frontend
-          namespace: production
-          port: 80 # [9]
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: forward-auth-ingress
+#   namespace: production #?
+#   annotations:
+#     traefik.ingress.kubernetes.io/router.entrypoints: websecure
+#     traefik.ingress.kubernetes.io/router.tls: "true"
+# spec:
+#   entryPoints: # [1]
+#     - websecure
+#   routes: # [2]
+#     - kind: Rule
+#       match: Path(`/`) || Path(`/{jscss:.*(.css|.js)}`) || Path(`/basket`) || Path(`/orders`) || Path(`/createproduct`) || Path(`/createcategory`) || Path(`/edit{edit:.*}`)
+#       services: # [8]
+#         - kind: Service
+#           name: nginx-frontend
+#           namespace: production
+#           port: 80 # [9]
 
-    # - kind: Rule
-    #   match: Path(`/api/products/public{any11:.*}`, `/api/categories/get{any12:.*}`)
-    #   services: # [8]
-    #     - kind: Service
-    #       name: product-service
-    #       namespace: production
-    #       port: 80 # [9]
+#     # - kind: Rule
+#     #   match: Path(`/api/products/public{any11:.*}`, `/api/categories/get{any12:.*}`)
+#     #   services: # [8]
+#     #     - kind: Service
+#     #       name: product-service
+#     #       namespace: production
+#     #       port: 80 # [9]
 
-    - kind: Rule
-      match: PathPrefix(`/api/products/protected`) || PathPrefix(`/api/categories/create`)
-      # middlewares: # [5]
-      #   - name: forward-auth # [6]
-      #     namespace: production # [7]
-      services: # [8]
-        - kind: Service
-          name: product-service
-          namespace: production
+#     - kind: Rule
+#       match: PathPrefix(`/api/products/protected`) || PathPrefix(`/api/categories/create`)
+#       # middlewares: # [5]
+#       #   - name: forward-auth # [6]
+#       #     namespace: production # [7]
+#       services: # [8]
+#         - kind: Service
+#           name: product-service
+#           namespace: production
           port: 80 # [9]
 
     # - kind: Rule
