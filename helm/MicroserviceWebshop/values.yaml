@@ -8,7 +8,7 @@ services:
     name: rabbitmq
     port: 5672
   basket_service:
-    name: basket-service
+    name: basket
     port: 80
     prefix: /api/basket
   nginx_frontend:
@@ -31,6 +31,15 @@ services:
     port: 80
     prefix: /api/categories/create
     prefix_public: /api/categories/get  
+  order_service:
+    name: order-service
+    port: 80
+    prefix: /api/order
+  payment_service:
+    name: payment-service
+    port: 80
+    prefix: /api/payment
+
 
 dependencies:
   node-auth-service:
@@ -91,6 +100,23 @@ node-auth-service:
     tag: "latest"
     containerPort: 6200
   name: "node-auth-service"
+
+order-service:
+  deployment:
+    image: "order-service"
+    registry: "mswsregistry.azurecr.io"
+    tag: "latest"
+    containerPort: 80
+  name: "order-service"
+
+payment-service:
+  deployment:
+    image: "payment-service"
+    registry: "mswsregistry.azurecr.io"
+    tag: "latest"
+    containerPort: 80
+  name: "payment-service"
+
 
 traefik:
   name: traefik

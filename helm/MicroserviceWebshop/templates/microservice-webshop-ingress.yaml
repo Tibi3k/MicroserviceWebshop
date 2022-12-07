@@ -25,6 +25,13 @@ spec:
                 name: {{.Values.services.basket_service.name}}
                 port:
                   number: {{.Values.services.basket_service.port}}
+          - path: {{.Values.services.order_service.prefix}}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.order_service.name}}
+                port:
+                  number: {{.Values.services.order_service.port}}
           #product paths     
           - path: {{.Values.services.category_service.prefix}}
             pathType: Prefix

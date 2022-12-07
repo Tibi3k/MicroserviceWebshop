@@ -48,6 +48,14 @@ dependencies:
     version: 0.1.6
     condition: dependencies.product-service.enabled
     repository: file://../ProductService
+  - name: order-service
+    version: 0.1.6
+    condition: dependencies.order-service.enabled
+    repository: file://../OrderService
+  - name: payment-service
+    version: 0.1.6
+    condition: dependencies.payment-service.enabled
+    repository: file://../PaymentService
   - name: traefik
     version: 10.19.5
     condition: dependencies.traefik.enabled

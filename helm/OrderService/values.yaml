@@ -1,0 +1,7 @@
+deployment:
+  image: "order-service"
+  registry: "mswsregistry.azurecr.io"
+  tag: "latest"
+  containerPort: 80
+
+name: "order-service"
