@@ -8,7 +8,7 @@ spec:
     - websecure
   routes: # [2]
     - kind: Rule
-      match: Path(`/`, `/{jscss:.*(.css|.js)}`, `/basket`, `/orders`, `/createproduct`, `/createcategory`, `/edit{edit:.*}`)"
+      match: PathPrefix(`/`) || PathPrefix(`/{jscss:.*(.css|.js)}`) || PathPrefix(`/basket`) || PathPrefix(`/orders`) || PathPrefix(`/createproduct`) || PathPrefix(`/createcategory`) || PathPrefix(`/edit{edit:.*}`)"
       services: # [8]
         - kind: Service
           name: nginx-frontend
