@@ -1,0 +1,92 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: {{default "staging" .Release.Namespace}}
+  name: {{.Values.public_name}}
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  rules:
+    - http:
+        paths:
+            #angular paths
+          - path: /main
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.nginx_frontend.name}}
+                port:
+                  number: {{.Values.services.nginx_frontend.port}}
+          - path: /polyfills
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.nginx_frontend.name}}
+                port:
+                  number: {{.Values.services.nginx_frontend.port}}
+          - path: /runtime
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.nginx_frontend.name}}
+                port:
+                  number: {{.Values.services.nginx_frontend.port}}         
+          - path: /styles
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.nginx_frontend.name}}
+                port:
+                  number: {{.Values.services.nginx_frontend.port}}   
+          #nginx paths
+          - path: {{.Values.services.nginx_frontend.prefix}}
+            pathType: Exact
+            backend:
+              service:
+                name: {{.Values.services.nginx_frontend.name}}
+                port:
+                  number: {{.Values.services.nginx_frontend.port}}
+          - path: {{.Values.services.nginx_frontend.prefix_basket}}
+            pathType: Exact
+            backend:
+              service:
+                name: {{.Values.services.nginx_frontend.name}}
+                port:
+                  number: {{.Values.services.nginx_frontend.port}}
+          - path: {{.Values.services.nginx_frontend.prefix_orders}}
+            pathType: Exact
+            backend:
+              service:
+                name: {{.Values.services.nginx_frontend.name}}
+                port:
+                  number: {{.Values.services.nginx_frontend.port}}
+          - path: {{.Values.services.nginx_frontend.prefix_create_product}}
+            pathType: Exact
+            backend:
+              service:
+                name: {{.Values.services.nginx_frontend.name}}
+                port:
+                  number: {{.Values.services.nginx_frontend.port}}
+          - path: {{.Values.services.nginx_frontend.prefix_create_category}}
+            pathType: Exact
+            backend:
+              service:
+                name: {{.Values.services.nginx_frontend.name}}
+                port:
+                  number: {{.Values.services.nginx_frontend.port}}
+          - path: {{.Values.services.nginx_frontend.prefix_edit}}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.nginx_frontend.name}}
+                port:
+                  number: {{.Values.services.nginx_frontend.port}} 
+          #products public
+          - path: {{.Values.services.product_service.prefix_public}}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{.Values.services.product_service.name}}
+                port:
+                  number: {{.Values.services.product_service.port}}

@@ -1,5 +1,5 @@
-name: avalon-ingress
-
+name: microservice-ingress
+public_name: microservice-public-ingress
 services:
   mssql:
     name: mssql
