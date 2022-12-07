@@ -8,7 +8,7 @@ spec:
     - websecure
   routes: # [2]
     - kind: Rule
-      match: PathPrefix(`/`) || PathPrefix(`/{jscss:.*(.css|.js)}`) || PathPrefix(`/basket`) || PathPrefix(`/orders`) || PathPrefix(`/createproduct`) || PathPrefix(`/createcategory`) || PathPrefix(`/edit{edit:.*}`)"
+      match: PathPrefix(`/`) || PathPrefix(`/{jscss:.*(.css|.js)}`) || PathPrefix(`/basket`) || PathPrefix(`/orders`) || PathPrefix(`/createproduct`) || PathPrefix(`/createcategory`) || PathPrefix(`/edit{edit:.*}`)
       services: # [8]
         - kind: Service
           name: nginx-frontend
@@ -16,7 +16,7 @@ spec:
           port: 80 # [9]
 
     - kind: Rule
-      match: Path(`/api/products/public{any11:.*}`, `/api/categories/get{any12:.*}`)"
+      match: Path(`/api/products/public{any11:.*}`, `/api/categories/get{any12:.*}`)
       services: # [8]
         - kind: Service
           name: product-service
@@ -24,7 +24,7 @@ spec:
           port: 80 # [9]
 
     - kind: Rule
-      match: Path(`/api/products/protected{any:.*}`, `/api/categories/create{any2:.*}`)"
+      match: Path(`/api/products/protected{any:.*}`, `/api/categories/create{any2:.*}`)
       middlewares: # [5]
         - name: forward-auth # [6]
           namespace: production # [7]
@@ -35,7 +35,7 @@ spec:
           port: 80 # [9]
 
     - kind: Rule
-      match: Path(`/api/basket{any:.*}`)"
+      match: Path(`/api/basket{any:.*}`)
       middlewares: # [5]
         - name: forward-auth # [6]
           namespace: production # [7]
