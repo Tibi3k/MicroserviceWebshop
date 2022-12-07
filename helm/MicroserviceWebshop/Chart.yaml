@@ -32,6 +32,10 @@ dependencies:
     version: 0.1.6
     condition: dependencies.mssql.enabled
     repository: file://../mssql
+  - name: mongodb
+    version: 0.1.6
+    condition: dependencies.mongodb.enabled
+    repository: file://../mongodb
   - name: rabbitmq
     version: 0.1.6
     condition: dependencies.rabbitmq.enabled

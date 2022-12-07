@@ -38,61 +38,61 @@ jobs:
           password: ${{ secrets.ACR_PASSWORD }}
 
 
-      - name: Build and push basket-service
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./BasketService/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/basket-service:latest
-          push: true
+      # - name: Build and push basket-service
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./BasketService/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/basket-service:latest
+      #     push: true
           
-      - name: Build and push email-service
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./EmailService/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/email-service:latest
-          push: true
+      # - name: Build and push email-service
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./EmailService/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/email-service:latest
+      #     push: true
 
-      - name: Build and push order-service
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./OrderService/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/order-service:latest
-          push: true
+      # - name: Build and push order-service
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./OrderService/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/order-service:latest
+      #     push: true
 
-      - name: Build and push payment-service
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./PaymentService/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/payment-service:latest
-          push: true
+      # - name: Build and push payment-service
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./PaymentService/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/payment-service:latest
+      #     push: true
 
-      - name: Build and push product-service
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./ProductService/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/product-service:latest
-          push: true
+      # - name: Build and push product-service
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./ProductService/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/product-service:latest
+      #     push: true
 
-      - name: Build and push node-auth-service
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./NodeAuthService/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/node-auth-service:latest
-          push: true
+      # - name: Build and push node-auth-service
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./NodeAuthService/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/node-auth-service:latest
+      #     push: true
 
-      - name: Build and push nginx-frontend
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: ./
-          file: ./MicroserviceFrontend/Dockerfile
-          tags: ${{secrets.ACR_NAME}}/nginx-frontend:latest
-          push: true
+      # - name: Build and push nginx-frontend
+      #   uses: docker/build-push-action@v3.0.0
+      #   with:
+      #     context: ./
+      #     file: ./MicroserviceFrontend/Dockerfile
+      #     tags: ${{secrets.ACR_NAME}}/nginx-frontend:latest
+      #     push: true
 
   deploy:
     runs-on: ubuntu-latest   
