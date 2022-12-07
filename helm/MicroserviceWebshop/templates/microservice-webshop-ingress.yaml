@@ -99,13 +99,6 @@ spec:
                 port:
                   number: {{.Values.services.nginx_frontend.port}}
           #product paths     
-          - path: {{.Values.services.product_service.prefix}}
-            pathType: Prefix
-            backend:
-              service:
-                name: {{.Values.services.product_service.name}}
-                port:
-                  number: {{.Values.services.product_service.port}}
           - path: {{.Values.services.product_service.prefix_public}}
             pathType: Prefix
             backend:
@@ -113,13 +106,6 @@ spec:
                 name: {{.Values.services.product_service.name}}
                 port:
                   number: {{.Values.services.product_service.port}}
-          - path: {{.Values.services.category_service.prefix}}
-            pathType: Prefix
-            backend:
-              service:
-                name: {{.Values.services.category_service.name}}
-                port:
-                  number: {{.Values.services.category_service.port}}
           - path: {{.Values.services.category_service.prefix_public}}
             pathType: Prefix
             backend:
