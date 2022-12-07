@@ -5,4 +5,4 @@ metadata:
   name: forward-auth
 spec:
   forwardAuth:
-    address: http://node-auth-service:6200/auth
+    address: http://node-auth-service/auth
