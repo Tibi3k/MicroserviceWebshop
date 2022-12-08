@@ -34,6 +34,8 @@ public class PaymentController : ControllerBase
   [HttpGet(Name = "CreateOrder")]
   public async Task<ActionResult<CreateOrder>> CreateOrder([FromBody] UserBasket basket)
   {
+    Console.WriteLine("CreateOrder");
+    Console.WriteLine(basket);
     var accessToken = await AquirePayPalAccessToken();
     if (accessToken == null || string.IsNullOrEmpty(accessToken.Access_token))
       return Unauthorized("Faild to authenticate user");
@@ -57,7 +59,8 @@ public class PaymentController : ControllerBase
         }
       }
     };
-    var newOrderSerialized = JsonSerializer.Serialize(newOrder);  
+    var newOrderSerialized = JsonSerializer.Serialize(newOrder);
+    Console.WriteLine(newOrderSerialized);
     var response = await apiHttpClinet.PostAsJsonAsync("", newOrderSerialized);
     var data = await response.Content.ReadAsStringAsync();
     Console.WriteLine("Res:" + data.ToString());
