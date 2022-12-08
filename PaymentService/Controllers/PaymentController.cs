@@ -31,7 +31,7 @@ public class PaymentController : ControllerBase
     InitTokenClient();
   }
 
-  [HttpGet(Name = "CreateOrder")]
+  [HttpPost(Name = "CreateOrder")]
   public async Task<ActionResult<CreateOrder>> CreateOrder([FromBody] UserBasket basket)
   {
     Console.WriteLine("CreateOrder");
