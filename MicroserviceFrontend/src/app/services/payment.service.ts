@@ -16,7 +16,7 @@ import { CreatePaypalOrder } from "../model/create-order";
 
     createOrder(basket: Basket): Observable<string> {
       const body = JSON.stringify(basket);
-      return this.http.post<CreatePaypalOrder>("api/payment",body)
+      return this.http.post<CreatePaypalOrder>("api/payment/create",body)
         .pipe(map((response: CreatePaypalOrder) => {
           console.log(response)
           console.log(response.id)
