@@ -32,7 +32,7 @@ export class PaymentComponent implements OnInit {
           clientId: 'AeMQteoytQtWWUhyNrO7LBHx0_-nrfQCKlS6Gs4VeobE8ZKc8je6YYGMqDcaVdK-W4czAP38fZZmnX4k',
           // for creating orders (transactions) on server see
           // https://developer.paypal.com/docs/checkout/reference/server-integration/set-up-transaction/
-          createOrderOnServer: (data) => this.paymentService.createOrder().toPromise().then(data => {
+          createOrderOnServer: (data) => this.paymentService.createOrder(this.basket!).toPromise().then(data => {
             console.log("promise", data)  
             if(data == undefined)
               return ""

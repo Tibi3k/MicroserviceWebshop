@@ -14,7 +14,7 @@ import { CreatePaypalOrder } from "../model/create-order";
     
     constructor(private http: HttpClient) {}
 
-    createOrder(): Observable<string> {
+    createOrder(basket: Basket): Observable<string> {
       return this.http.get<CreatePaypalOrder>("api/payment")
         .pipe(map((response: CreatePaypalOrder) => {
           console.log(response)

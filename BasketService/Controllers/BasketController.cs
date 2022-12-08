@@ -83,7 +83,6 @@ namespace BasketService.Controllers
         }
 
         private string decodeUserData(string data) {
-            Console.WriteLine("res:" + Request.Headers[data]);
             var encodedUserData = Request.Headers[data].ToString() ?? "";
             return Encoding.UTF8.GetString(Convert.FromBase64String(encodedUserData));
         }

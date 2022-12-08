@@ -2,6 +2,7 @@
 using BasketService.Model;
 using Microsoft.AspNetCore.Mvc;
 using PaymentService.Models;
+using PaymentService.Models.InitPayment;
 using PaymentService.services;
 using System.Net.Http.Headers;
 using System.Text;
@@ -31,16 +32,33 @@ public class PaymentController : ControllerBase
   }
 
   [HttpGet(Name = "CreateOrder")]
-  public async Task<ActionResult<CreateOrder>> CreateOrder()
+  public async Task<ActionResult<CreateOrder>> CreateOrder([FromBody] UserBasket basket)
   {
     var accessToken = await AquirePayPalAccessToken();
     if (accessToken == null || string.IsNullOrEmpty(accessToken.Access_token))
       return Unauthorized("Faild to authenticate user");
     var apiHttpClinet = CreateHttpClient(accessToken);
-    FileStream stream = System.IO.File.OpenRead(@"./Models/mockPayment.json");
-    var file = await JsonSerializer.DeserializeAsync<Order>(stream);
-    Console.WriteLine("File:" + stream.ToString());
-    var response = await apiHttpClinet.PostAsJsonAsync("", file);
+    //FileStream stream = System.IO.File.OpenRead(@"./Models/mockPayment.json");
+    //var file = await JsonSerializer.DeserializeAsync<Order>(stream);
+    //Console.WriteLine("File:" + stream.ToString());
+    var newOrder = new InitOrder()
+    {
+      Intent = "CAPTURE",
+      PurchaseUnits = new List<Models.InitPayment.PurchaseUnit>() {
+        new PaymentService.Models.InitPayment.PurchaseUnit() {
+         Amount = new Models.InitPayment.Amount() {
+          CurrencyCode = "HUF",
+          Value = basket.TotalCost.ToString()
+         },
+         Payee = new Models.InitPayment.Payee(){
+          EmailAdress = "sb-dnoc4320943156@business.example.com",
+          MerchantId = "CMRFZV8SL7DEN"
+         }
+        }
+      }
+    };
+    var newOrderSerialized = JsonSerializer.Serialize(newOrder);  
+    var response = await apiHttpClinet.PostAsJsonAsync("", newOrderSerialized);
     var data = await response.Content.ReadAsStringAsync();
     Console.WriteLine("Res:" + data.ToString());
     var order = JsonSerializer.Deserialize<CreateOrder>(data);

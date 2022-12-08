@@ -2,18 +2,7 @@
 
 volumes:
   datafiles:
-  kong_data: {}
-  kong_prefix_vol:
-    driver_opts:
-     type: tmpfs
-     device: tmpfs
-  kong_tmp_vol:
-    driver_opts:
-     type: tmpfs
-     device: tmpfs
   mongod:
-    driver: local
-  postgres_data:
     driver: local
    
 

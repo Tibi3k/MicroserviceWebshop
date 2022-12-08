@@ -1,16 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  # annotations:
-  #   traefik.enable: "true"
-  #   traefik.http.middlewares.basketAuth.forwardauth.address: http://host.docker.internal:6200/auth
-  #   traefik.http.middlewares.basketAuth.forwardauth.authResponseHeaders: Email, UserId, UserName, jobTitle
-  #   traefik.http.routers.basket-service.entrypoints: web
-  #   traefik.http.routers.basket-service.middlewares: ' basketAuth@docker'
-  #   traefik.http.routers.basket-service.rule: Host(`localhost`) && Path(`/api/basket{any:.*}`)
-  #   traefik.port: "80"
-  labels:
-    io.kompose.service: basket-service-service
   name: basket-service
 spec:
   replicas: 1
@@ -18,26 +8,8 @@ spec:
     matchLabels:
       io.kompose.service: basket-service-service
   template:
-    metadata:
-      # annotations:
-      #   kompose.cmd: kompose convert
-      #   kompose.version: 1.26.1 (a9d05d509)
-      #   traefik.enable: "true"
-      #   traefik.http.middlewares.basketAuth.forwardauth.address: http://host.docker.internal:6200/auth
-      #   traefik.http.middlewares.basketAuth.forwardauth.authResponseHeaders: Email, UserId, UserName, jobTitle
-      #   traefik.http.routers.basket-service.entrypoints: web
-      #   traefik.http.routers.basket-service.middlewares: ' basketAuth@docker'
-      #   traefik.http.routers.basket-service.rule: Host(`localhost`) && Path(`/api/basket{any:.*}`)
-      #   traefik.port: "80"
-      # creationTimestamp: null
-      labels:
-        # io.kompose.network/basket-net: "true"
-        # io.kompose.network/rabbitmqnet: "true"
-        # io.kompose.network/traefik-net: "true"
-        io.kompose.service: basket-service-service
     spec:
       containers:
-        #TODO fix hogy ne legyen statikus
         - image: mswsregistry.azurecr.io/basket-service:latest
           name: basket-service
           resources: {}

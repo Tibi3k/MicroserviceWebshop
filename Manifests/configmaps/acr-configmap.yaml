@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: acr-configmap
-data:
-  django-email-address: avalon.f.pass@gmail.com
-  django-debug: "1"
