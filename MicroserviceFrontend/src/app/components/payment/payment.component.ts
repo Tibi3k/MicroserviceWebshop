@@ -30,6 +30,7 @@ export class PaymentComponent implements OnInit {
   private initConfig(): void {
       this.payPalConfig = {
           clientId: 'AeMQteoytQtWWUhyNrO7LBHx0_-nrfQCKlS6Gs4VeobE8ZKc8je6YYGMqDcaVdK-W4czAP38fZZmnX4k',
+          currency: 'HUF',
           // for creating orders (transactions) on server see
           // https://developer.paypal.com/docs/checkout/reference/server-integration/set-up-transaction/
           createOrderOnServer: (data) => this.paymentService.createOrder(this.basket!).toPromise().then(data => {
