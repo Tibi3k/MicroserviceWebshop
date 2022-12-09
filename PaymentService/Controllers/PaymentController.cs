@@ -32,10 +32,9 @@ public class PaymentController : ControllerBase
   }
 
   [HttpPost("create")]
-  public async Task<ActionResult<CreateOrder>> CreateOrder([FromBody] UserBasket basket)
+  public async Task<ActionResult<CreateOrder>> CreateOrder([FromQuery] int totalCost)
   {
     Console.WriteLine("CreateOrder");
-    Console.WriteLine(basket);
     var accessToken = await AquirePayPalAccessToken();
     if (accessToken == null || string.IsNullOrEmpty(accessToken.Access_token))
       return Unauthorized("Faild to authenticate user");
@@ -50,7 +49,7 @@ public class PaymentController : ControllerBase
         new PaymentService.Models.InitPayment.PurchaseUnit() {
          Amount = new Models.InitPayment.Amount() {
           CurrencyCode = "HUF",
-          Value = basket.TotalCost.ToString()
+          Value = totalCost.ToString()
          },
          Payee = new Models.InitPayment.Payee(){
           EmailAdress = "sb-dnoc4320943156@business.example.com",
