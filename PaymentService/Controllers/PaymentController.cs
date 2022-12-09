@@ -48,8 +48,8 @@ public class PaymentController : ControllerBase
       PurchaseUnits = new List<Models.InitPayment.PurchaseUnit>() {
         new PaymentService.Models.InitPayment.PurchaseUnit() {
          Amount = new Models.InitPayment.Amount() {
-          CurrencyCode = "HUF",
-          Value = totalCost.ToString()
+          CurrencyCode = "USD",
+          Value = $"{totalCost}.00"
          },
          Payee = new Models.InitPayment.Payee(){
           EmailAdress = "sb-dnoc4320943156@business.example.com",
