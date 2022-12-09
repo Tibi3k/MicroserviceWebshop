@@ -40,7 +40,7 @@ public class PaymentController : ControllerBase
       return Unauthorized("Faild to authenticate user");
     var apiHttpClinet = CreateHttpClient(accessToken);
     //FileStream stream = System.IO.File.OpenRead(@"./Models/mockPayment.json");
-    //var file = await JsonSerializer.DeserializeAsync<Order>(stream);
+    //var newOrderSerialized = await JsonSerializer.DeserializeAsync<Order>(stream);
     //Console.WriteLine("File:" + stream.ToString());
     var newOrder = new InitOrder()
     {
@@ -48,8 +48,8 @@ public class PaymentController : ControllerBase
       PurchaseUnits = new List<Models.InitPayment.PurchaseUnit>() {
         new PaymentService.Models.InitPayment.PurchaseUnit() {
          Amount = new Models.InitPayment.Amount() {
-          CurrencyCode = "USD",
-          Value = $"{totalCost}.00"
+          CurrencyCode = "HUF",
+          Value = totalCost.ToString()
          },
          Payee = new Models.InitPayment.Payee(){
           EmailAdress = "sb-dnoc4320943156@business.example.com",
@@ -58,9 +58,9 @@ public class PaymentController : ControllerBase
         }
       }
     };
-    var newOrderSerialized = JsonSerializer.Serialize(newOrder);
-    Console.WriteLine(newOrderSerialized);
-    var response = await apiHttpClinet.PostAsJsonAsync("", newOrderSerialized);
+    //var newOrderSerialized = JsonSerializer.Serialize(newOrder);
+    //Console.WriteLine(newOrderSerialized);
+    var response = await apiHttpClinet.PostAsJsonAsync("", newOrder);
     var data = await response.Content.ReadAsStringAsync();
     Console.WriteLine("Res:" + data.ToString());
     var order = JsonSerializer.Deserialize<CreateOrder>(data);
